@@ -89,13 +89,13 @@ const Contact = () => {
     officeArea: '',
     shopType: '',
     shopArea: '',
-    category: '',
+    categories: [], // Changed from category to categories (array)
     subcategories: []
   });
   const [errors, setErrors] = useState({});
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [selectedRelocation, setSelectedRelocation] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]); // Array for multiple categories
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
   const [animateIn, setAnimateIn] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -112,17 +112,35 @@ const Contact = () => {
     }
   };
 
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    setSelectedSubcategories([]);
-    setFormData(prev => ({
-      ...prev,
-      category: category,
-      subcategories: []
-    }));
-    if (errors.category) {
-      setErrors(prev => ({ ...prev, category: '' }));
-    }
+  // Handle category toggle (checkbox)
+  const handleCategoryToggle = (category) => {
+    setSelectedCategories(prev => {
+      const isSelected = prev.includes(category);
+      let newCategories;
+      if (isSelected) {
+        newCategories = prev.filter(item => item !== category);
+        // Remove subcategories from the deselected category
+        const categorySubcategories = serviceCategories[category]?.subcategories || [];
+        setSelectedSubcategories(prevSubs => 
+          prevSubs.filter(sub => !categorySubcategories.includes(sub))
+        );
+      } else {
+        newCategories = [...prev, category];
+      }
+      
+      // Update formData
+      setFormData(prev => ({
+        ...prev,
+        categories: newCategories
+      }));
+      
+      // Clear error for categories
+      if (errors.categories) {
+        setErrors(prev => ({ ...prev, categories: '' }));
+      }
+      
+      return newCategories;
+    });
   };
 
   const handleSubcategoryToggle = (subcategory) => {
@@ -153,7 +171,7 @@ const Contact = () => {
     if (!formData.address.trim()) newErrors.address = 'Address is required';
     if (!formData.shiftingDate) newErrors.shiftingDate = 'Shifting date is required';
     if (!formData.relocationType) newErrors.relocationType = 'Please select relocation type';
-    if (!formData.category) newErrors.category = 'Please select a service category';
+    if (selectedCategories.length === 0) newErrors.categories = 'Please select at least one service category';
     if (selectedSubcategories.length === 0) newErrors.subcategories = 'Please select at least one service';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -203,12 +221,18 @@ const Contact = () => {
       ? selectedSubcategories.map((s, i) => `  ${i + 1}. ${s}`).join('\n')
       : 'Not specified';
 
+    // Get selected categories list
+    const selectedCategoriesList = selectedCategories.length > 0
+      ? selectedCategories.map((c, i) => `  ${i + 1}. ${c}`).join('\n')
+      : 'Not specified';
+
     // Create WhatsApp message
     const message = `📋 *NEW ENQUIRY - GBOOMBA HOME SERVICES*
 ━━━━━━━━━━━━━━━━━━━━━━
 
 📌 *Service Details:*
-• Category: ${formData.category || 'Not selected'}
+• Categories:
+${selectedCategoriesList}
 • Selected Services:
 ${selectedServicesList}
 
@@ -254,11 +278,11 @@ ${selectedServicesList}
         officeArea: '',
         shopType: '',
         shopArea: '',
-        category: '',
+        categories: [],
         subcategories: []
       });
       setSelectedRelocation('');
-      setSelectedCategory('');
+      setSelectedCategories([]);
       setSelectedSubcategories([]);
     }, 5000);
   };
@@ -274,8 +298,17 @@ ${selectedServicesList}
     { icon: FaTruck, name: 'Transport Services' }
   ];
 
-  // Get current category's subcategories
-  const currentSubcategories = selectedCategory ? serviceCategories[selectedCategory]?.subcategories || [] : [];
+  // Get all subcategories from selected categories
+  const getSubcategoriesForSelectedCategories = () => {
+    const allSubs = [];
+    selectedCategories.forEach(category => {
+      const subs = serviceCategories[category]?.subcategories || [];
+      allSubs.push(...subs);
+    });
+    return allSubs;
+  };
+
+  const currentSubcategories = getSubcategoriesForSelectedCategories();
 
   // Phone number for calls
   const phoneNumber = '918111002100';
@@ -406,30 +439,31 @@ ${selectedServicesList}
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Service Categories */}
+                  {/* Service Categories - Multiple Selection with Checkboxes */}
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-2">
                       Which Service Are You Looking For? <span className="text-red-500">*</span>
+                      <span className="block text-[10px] font-normal text-gray-400 mt-0.5">(Select one or more services)</span>
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
                       {Object.keys(serviceCategories).map((category) => (
                         <label
                           key={category}
                           className={`flex items-center p-2 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                            selectedCategory === category
+                            selectedCategories.includes(category)
                               ? 'border-teal bg-teal-light shadow-md'
                               : 'border-gray-200 hover:border-teal hover:bg-gray-50'
                           }`}
-                          onClick={() => handleCategoryChange(category)}
+                          onClick={() => handleCategoryToggle(category)}
                           style={{
-                            borderColor: selectedCategory === category ? colors.teal : undefined,
-                            backgroundColor: selectedCategory === category ? colors.tealLight : undefined
+                            borderColor: selectedCategories.includes(category) ? colors.teal : undefined,
+                            backgroundColor: selectedCategories.includes(category) ? colors.tealLight : undefined
                           }}
                         >
                           <input
                             type="checkbox"
-                            checked={selectedCategory === category}
-                            onChange={() => handleCategoryChange(category)}
+                            checked={selectedCategories.includes(category)}
+                            onChange={() => handleCategoryToggle(category)}
                             className="mr-2 w-4 h-4 accent-teal flex-shrink-0"
                           />
                           <span className="text-xs">
@@ -438,18 +472,21 @@ ${selectedServicesList}
                         </label>
                       ))}
                     </div>
-                    {errors.category && (
-                      <p className="text-red-500 text-[10px] mt-1 animate-fade-in-up">{errors.category}</p>
+                    {errors.categories && (
+                      <p className="text-red-500 text-[10px] mt-1 animate-fade-in-up">{errors.categories}</p>
+                    )}
+                    {selectedCategories.length > 0 && (
+                      <p className="text-[10px] mt-1" style={{ color: colors.teal }}>
+                        Selected: {selectedCategories.length} category(s)
+                      </p>
                     )}
                   </div>
 
-                  {/* Subcategories - Dynamic based on selected category */}
-                  {selectedCategory && currentSubcategories.length > 0 && (
+                  {/* Subcategories - Dynamic based on selected categories */}
+                  {selectedCategories.length > 0 && currentSubcategories.length > 0 && (
                     <div className="p-3 rounded-lg" style={{ backgroundColor: colors.tealLight }}>
                       <label className="block text-xs font-medium text-gray-700 mb-1.5">
-                        Select Services under <span className="font-bold" style={{ color: colors.teal }}>
-                          {selectedCategory}
-                        </span> <span className="text-red-500">*</span>
+                        Select Services under Selected Categories <span className="text-red-500">*</span>
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-36 overflow-y-auto">
                         {currentSubcategories.map((subcategory) => (
@@ -810,7 +847,7 @@ ${selectedServicesList}
                   {[
                     { icon: FaPhoneAlt, label: 'Phone', value: `+91 ${formattedPhone}`, link: `tel:${phoneNumber}` },
                     { icon: FaWhatsapp, label: 'WhatsApp', value: `+91 ${formattedPhone}`, link: `https://wa.me/${phoneNumber}` },
-                    { icon: FaEnvelope, label: 'Email', value: 'info@gboomba.in', link: 'mailto:info@gboomba.in' },
+                    { icon: FaEnvelope, label: 'Email', value: 'gboombappy@gmail.com', link: 'mailto:gboombappy@gmail.com' },
                     { icon: FaGlobe, label: 'Website', value: 'www.gboomba.in', link: 'https://www.gboomba.in' },
                     { icon: FaMapMarkerAlt, label: 'Address', value: '23/17, Mutthu Vinayagar Kovil Street, Punjai Puliampatti, Erode - 638459', link: null }
                   ].map((item, idx) => {
@@ -933,46 +970,6 @@ ${selectedServicesList}
                 className="rounded-xl transition-all duration-500 hover:scale-[1.01]"
               ></iframe>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer Banner */}
-      <section className="py-6" style={{ backgroundColor: colors.navy }}>
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="flex items-center justify-center gap-2 text-white/50 text-[10px] mb-2">
-            <span className="animate-pulse-slow">Fast</span>
-            <span className="w-0.5 h-0.5 bg-white/20 rounded-full"></span>
-            <span className="animate-pulse-slow" style={{ animationDelay: '500ms' }}>Reliable</span>
-            <span className="w-0.5 h-0.5 bg-white/20 rounded-full"></span>
-            <span className="animate-pulse-slow" style={{ animationDelay: '1000ms' }}>Professional</span>
-          </div>
-          
-          <h3 className="text-lg font-bold text-white mb-1 group cursor-pointer transition-all duration-300 hover:scale-105">
-            <span style={{ color: colors.teal }}>GBOOMBA</span> HOME SERVICES
-          </h3>
-          <p className="text-white/50 text-[10px] mb-2">Complete Home Solutions</p>
-          <p className="text-white/40 text-[9px] mb-2">
-            Services: Cleaning • Painting • Electrical & Plumbing • AC Technician • Packers & Movers • Transport • Carpentry
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <a
-              href={`tel:${phoneNumber}`}
-              className="inline-flex items-center gap-1.5 text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-105 group"
-              style={{ backgroundColor: colors.teal }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = colors.tealDark}
-              onMouseLeave={(e) => e.target.style.backgroundColor = colors.teal}
-            >
-              <FaPhoneAlt size={12} className="group-hover:animate-pulse" /> Contact: {formattedPhone}
-            </a>
-            <a
-              href="https://www.gboomba.in"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-white/70 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 hover:text-white hover:scale-105"
-            >
-              <FaGlobe size={12} /> www.gboomba.in
-            </a>
           </div>
         </div>
       </section>

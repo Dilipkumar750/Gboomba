@@ -33,8 +33,8 @@ const App = () => {
   // Replace with your actual URLs
   const socialLinks = {
     whatsapp: 'https://wa.me/918111002100?text=Hello%20I%20would%20like%20to%20know%20more%20about%20your%20services',
-    instagram: 'https://www.instagram.com/gboomba/',
-    google: 'https://g.page/gboomba',
+    instagram: 'https://www.instagram.com/gboomba_homesolutions?igsh=MXA0djJjcnE3aDQyag==',
+    google: 'https://g.page/gboomba.in',
     phone: 'tel:918111002100'
   };
 

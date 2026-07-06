@@ -51,12 +51,13 @@ const Enquiry = () => {
     shopType: '',
     shopArea: '',
     serviceType: 'enquiry',
-    category: '',
+    categories: [], // Changed from category to categories (array)
     subcategories: []
   });
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
+  const [selectedCategories, setSelectedCategories] = useState([]); // Array for multiple categories
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
 
   // Logo Colors
@@ -76,16 +77,35 @@ const Enquiry = () => {
     }
   };
 
-  const handleCategoryChange = (category) => {
-    setFormData(prev => ({
-      ...prev,
-      category: category,
-      subcategories: []
-    }));
-    setSelectedSubcategories([]);
-    if (errors.category) {
-      setErrors(prev => ({ ...prev, category: '' }));
-    }
+  // Handle category toggle (checkbox)
+  const handleCategoryToggle = (category) => {
+    setSelectedCategories(prev => {
+      const isSelected = prev.includes(category);
+      let newCategories;
+      if (isSelected) {
+        newCategories = prev.filter(item => item !== category);
+        // Remove subcategories from the deselected category
+        const categorySubcategories = serviceCategories[category]?.subcategories || [];
+        setSelectedSubcategories(prevSubs => 
+          prevSubs.filter(sub => !categorySubcategories.includes(sub))
+        );
+      } else {
+        newCategories = [...prev, category];
+      }
+      
+      // Update formData
+      setFormData(prev => ({
+        ...prev,
+        categories: newCategories
+      }));
+      
+      // Clear error for categories
+      if (errors.categories) {
+        setErrors(prev => ({ ...prev, categories: '' }));
+      }
+      
+      return newCategories;
+    });
   };
 
   const handleSubcategoryToggle = (subcategory) => {
@@ -119,6 +139,18 @@ const Enquiry = () => {
     });
   };
 
+  // Get all subcategories from selected categories
+  const getSubcategoriesForSelectedCategories = () => {
+    const allSubs = [];
+    selectedCategories.forEach(category => {
+      const subs = serviceCategories[category]?.subcategories || [];
+      allSubs.push(...subs);
+    });
+    return allSubs;
+  };
+
+  const currentSubcategories = getSubcategoriesForSelectedCategories();
+
   // Generate WhatsApp message
   const generateWhatsAppMessage = () => {
     const relocationTypeMap = {
@@ -138,8 +170,15 @@ const Enquiry = () => {
     message += `📌 *WORK TYPE*\n`;
     message += `${serviceTypeMap[formData.serviceType] || 'Not specified'}\n\n`;
     
-    message += `📌 *SERVICE CATEGORY*\n`;
-    message += `${formData.category || 'Not selected'}\n\n`;
+    message += `📌 *SERVICE CATEGORIES*\n`;
+    if (selectedCategories.length > 0) {
+      selectedCategories.forEach((category, index) => {
+        message += `  ${index + 1}. ${category}\n`;
+      });
+    } else {
+      message += `Not selected\n`;
+    }
+    message += `\n`;
     
     if (selectedSubcategories.length > 0) {
       message += `📌 *SELECTED SERVICES*\n`;
@@ -184,7 +223,7 @@ const Enquiry = () => {
     
     message += `═══════════════════════════\n`;
     message += `📩 *GBOOMBA HOME SERVICES*\n`;
-    message += `📞 Contact: 81 1100 21000\n`;
+    message += `📞 Contact: 81 1100 2100\n`;
     message += `🌐 *Complete Home Solutions*\n`;
     message += `• Cleaning • Painting • Electrical & Plumbing\n`;
     message += `• AC Technician • Packers & Movers • Transport\n`;
@@ -215,8 +254,8 @@ const Enquiry = () => {
     if (!formData.relocationType) {
       newErrors.relocationType = 'Please select a relocation type';
     }
-    if (!formData.category) {
-      newErrors.category = 'Please select at least one service category';
+    if (selectedCategories.length === 0) {
+      newErrors.categories = 'Please select at least one service category';
     }
     if (selectedSubcategories.length === 0) {
       newErrors.subcategories = 'Please select at least one service';
@@ -239,7 +278,7 @@ const Enquiry = () => {
 
     // Generate WhatsApp message and open WhatsApp
     const whatsappMessage = generateWhatsAppMessage();
-    const phoneNumber = '918111002100'; // Remove the + for URL
+    const phoneNumber = '918111002100';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${whatsappMessage}`;
     
     // Open WhatsApp in new tab
@@ -262,17 +301,15 @@ const Enquiry = () => {
         shopType: '',
         shopArea: '',
         serviceType: 'enquiry',
-        category: '',
+        categories: [],
         subcategories: []
       });
+      setSelectedCategories([]);
       setSelectedSubcategories([]);
     }, 5000);
   };
 
   const today = new Date().toISOString().slice(0, 16);
-
-  // Get current category's subcategories
-  const currentSubcategories = formData.category ? serviceCategories[formData.category]?.subcategories || [] : [];
 
   return (
     <div className="min-h-screen py-8" style={{ backgroundColor: '#f8fafc' }}>
@@ -385,27 +422,28 @@ const Enquiry = () => {
               </div>
             </div>
 
-            {/* Service Categories */}
+            {/* Service Categories - Multiple Selection with Checkboxes */}
             <div className="mb-5">
               <label className="block text-gray-700 font-medium text-sm mb-2">
                 Which Service Are You Looking For? <span className="text-red-500">*</span>
+                <span className="block text-xs font-normal text-gray-400 mt-0.5">(Select one or more services)</span>
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto p-1">
                 {Object.keys(serviceCategories).map((category) => (
                   <label
                     key={category}
                     className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                      formData.category === category
+                      selectedCategories.includes(category)
                         ? 'border-teal bg-teal-light shadow-md'
                         : 'border-gray-200 hover:border-teal hover:bg-gray-50'
                     }`}
-                    onClick={() => handleCategoryChange(category)}
+                    onClick={() => handleCategoryToggle(category)}
                   >
                     <input
                       type="checkbox"
-                      checked={formData.category === category}
-                      onChange={() => handleCategoryChange(category)}
-                      className="mr-2 w-4 h-4 accent-teal"
+                      checked={selectedCategories.includes(category)}
+                      onChange={() => handleCategoryToggle(category)}
+                      className="mr-2 w-4 h-4 accent-teal flex-shrink-0"
                     />
                     <span className="text-sm">
                       {serviceCategories[category].icon} {category}
@@ -413,20 +451,23 @@ const Enquiry = () => {
                   </label>
                 ))}
               </div>
-              {errors.category && (
-                <p className="text-red-500 text-xs mt-1 error-message">{errors.category}</p>
+              {errors.categories && (
+                <p className="text-red-500 text-xs mt-1 error-message">{errors.categories}</p>
+              )}
+              {selectedCategories.length > 0 && (
+                <p className="text-xs mt-1" style={{ color: colors.teal }}>
+                  Selected: {selectedCategories.length} category(s)
+                </p>
               )}
             </div>
 
-            {/* Subcategories - Dynamic based on selected category */}
-            {formData.category && currentSubcategories.length > 0 && (
+            {/* Subcategories - Dynamic based on selected categories */}
+            {selectedCategories.length > 0 && currentSubcategories.length > 0 && (
               <div className="mb-5 p-4 rounded-lg" style={{ backgroundColor: colors.tealLight }}>
                 <label className="block text-gray-700 font-medium text-sm mb-2">
-                  Select Services under <span className="font-bold" style={{ color: colors.teal }}>
-                    {formData.category}
-                  </span> <span className="text-red-500">*</span>
+                  Select Services under Selected Categories <span className="text-red-500">*</span>
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
                   {currentSubcategories.map((subcategory) => (
                     <label
                       key={subcategory}
@@ -441,7 +482,7 @@ const Enquiry = () => {
                         type="checkbox"
                         checked={selectedSubcategories.includes(subcategory)}
                         onChange={() => handleSubcategoryToggle(subcategory)}
-                        className="mr-2 w-4 h-4 accent-teal"
+                        className="mr-2 w-4 h-4 accent-teal flex-shrink-0"
                       />
                       <span className="text-sm">{subcategory}</span>
                     </label>
@@ -766,6 +807,32 @@ const Enquiry = () => {
         }
         .animate-bounce-slow {
           animation: bounce-slow 2s ease-in-out infinite;
+        }
+        .animate-pulse {
+          animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        /* Scrollbar Styles */
+        .max-h-64::-webkit-scrollbar,
+        .max-h-48::-webkit-scrollbar {
+          width: 4px;
+        }
+        .max-h-64::-webkit-scrollbar-track,
+        .max-h-48::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 4px;
+        }
+        .max-h-64::-webkit-scrollbar-thumb,
+        .max-h-48::-webkit-scrollbar-thumb {
+          background: #008080;
+          border-radius: 4px;
+        }
+        .max-h-64::-webkit-scrollbar-thumb:hover,
+        .max-h-48::-webkit-scrollbar-thumb:hover {
+          background: #006666;
         }
       `}</style>
     </div>

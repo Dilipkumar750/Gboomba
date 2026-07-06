@@ -70,7 +70,7 @@ const Footer = () => {
   // Data for social media
   const socialLinks = [
     { icon: FaFacebook, url: 'https://facebook.com', label: 'Facebook', color: '#1877f2' },
-    { icon: FaInstagram, url: 'https://instagram.com', label: 'Instagram', color: '#e4405f' },
+    { icon: FaInstagram, url: 'https://www.instagram.com/gboomba_homesolutions?igsh=MXA0djJjcnE3aDQyag==', label: 'Instagram', color: '#e4405f' },
     { icon: FaYoutube, url: 'https://youtube.com', label: 'YouTube', color: '#ff0000' },
   ];
 
