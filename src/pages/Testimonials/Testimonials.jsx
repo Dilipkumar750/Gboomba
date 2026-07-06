@@ -1,38 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FaStar, 
   FaQuoteLeft, 
   FaQuoteRight, 
-  FaArrowLeft, 
   FaCheckCircle, 
   FaArrowRight,
   FaTruck,
-  FaBoxes,
   FaHeart,
   FaUserCheck,
-  FaMedal,
   FaFilter,
   FaTimes,
   FaCalendarAlt,
-  FaUser,
   FaMapMarkerAlt,
   FaThumbsUp,
   FaRegSmile,
   FaHome,
   FaBuilding,
   FaStore,
-  FaSearch
+  FaSearch,
+  FaPhoneAlt,
+  FaWhatsapp
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const Testimonials = () => {
-  // Colors
+  const [animateIn, setAnimateIn] = useState(false);
+
+  useEffect(() => {
+    setAnimateIn(true);
+  }, []);
+
+  // Colors matching the brand
   const colors = {
     navy: '#1a2a4a',
     navyDark: '#0f1a33',
     teal: '#008080',
     tealDark: '#006666',
     tealLight: '#e6f7f7',
+    white: '#ffffff',
+    lightGray: '#f8f9fa'
   };
 
   const [selectedFilter, setSelectedFilter] = useState('All');
@@ -190,10 +196,10 @@ const Testimonials = () => {
 
   // Stats
   const stats = [
-    { number: '4.9/5', label: 'Average Rating', icon: FaStar, color: 'text-yellow-400' },
-    { number: '500+', label: 'Happy Customers', icon: FaRegSmile, color: 'text-teal-500' },
-    { number: '100%', label: 'On-Time Delivery', icon: FaTruck, color: 'text-blue-500' },
-    { number: '100%', label: 'Satisfaction Rate', icon: FaThumbsUp, color: 'text-green-500' }
+    { number: '4.9/5', label: 'Average Rating', icon: FaStar, color: '#FFD700' },
+    { number: '500+', label: 'Happy Customers', icon: FaRegSmile, color: '#008080' },
+    { number: '100%', label: 'On-Time Delivery', icon: FaTruck, color: '#3498db' },
+    { number: '100%', label: 'Satisfaction Rate', icon: FaThumbsUp, color: '#27ae60' }
   ];
 
   // Get icon for type
@@ -220,77 +226,106 @@ const Testimonials = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
+    <div className="min-h-screen" style={{ backgroundColor: colors.lightGray }}>
+      {/* Hero Section with Animations */}
       <div className="relative overflow-hidden" style={{ backgroundColor: colors.navy }}>
+        <div style={{ 
+          height: '3px',
+          background: `linear-gradient(90deg, ${colors.navy} 0%, ${colors.teal} 50%, ${colors.navy} 100%)`,
+          animation: 'gradientPulse 3s ease-in-out infinite'
+        }}></div>
+
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full -mr-48 -mt-48"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full -ml-48 -mb-48"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-white/20 rounded-full"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-white/10 rounded-full"></div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -mr-32 -mt-32 animate-float"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full -ml-32 -mb-32 animate-float-delayed"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-white/20 rounded-full animate-pulse-slow"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-white/10 rounded-full animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4" style={{ backgroundColor: colors.teal + '33' }}>
-              <FaHeart className="text-teal-light" size={14} />
-              <span className="text-xs font-medium text-white tracking-wider">TESTIMONIALS</span>
+        <div className={`relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12 transition-all duration-1000 transform ${
+          animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+        }`}>
+          <div className="text-center max-w-3xl mx-auto">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <div 
+                className="w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-500 hover:scale-110 hover:rotate-12"
+                style={{ 
+                  background: `linear-gradient(135deg, ${colors.navy}, ${colors.teal})`,
+                  boxShadow: '0 4px 12px rgba(0,128,128,0.3)'
+                }}
+              >
+                <span className="text-white text-2xl font-bold">G</span>
+              </div>
+              <div>
+                <h1 className="text-3xl font-extrabold text-white">
+                  <span style={{ color: colors.teal }}>GBOOMBA</span>
+                </h1>
+                <p className="text-[10px] font-medium text-white/70 tracking-wider">COMPLETE HOME SERVICES</p>
+              </div>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-              What Our <span className="text-teal-light">Customers Say</span>
-            </h1>
-            <p className="text-white/80 text-base md:text-lg max-w-2xl mx-auto">
+
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3 animate-pulse-slow" style={{ backgroundColor: colors.teal + '33' }}>
+              <FaHeart className="text-white" size={12} />
+              <span className="text-[10px] font-medium text-white tracking-wider">TESTIMONIALS</span>
+            </div>
+
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 leading-tight animate-fade-in-up">
+              What Our <span style={{ color: colors.teal }}>Customers Say</span>
+            </h2>
+            <p className="text-white/70 text-xs max-w-2xl mx-auto animate-fade-in-up-delayed">
               Real stories from real people who trusted GBOOMBA with their relocation needs
             </p>
           </div>
         </div>
 
-        {/* Bottom Wave */}
         <div className="absolute bottom-0 left-0 right-0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 40" className="w-full">
-            <path fill="#f8fafc" d="M0,30L80,28C160,26,320,22,480,24C640,26,800,34,960,32C1120,30,1280,18,1360,12L1440,6L1440,40L1360,40C1280,40,1120,40,960,40C800,40,640,40,480,40C320,40,160,40,80,40L0,40Z"></path>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 30" className="w-full">
+            <path fill={colors.lightGray} d="M0,20L80,18C160,16,320,12,480,14C640,16,800,24,960,22C1120,20,1280,8,1360,6L1440,4L1440,30L1360,30C1280,30,1120,30,960,30C800,30,640,30,480,30C320,30,160,30,80,30L0,30Z"></path>
           </svg>
         </div>
       </div>
 
-      {/* Stats Overview */}
+      {/* Stats Overview with Animations */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
               <div 
                 key={index}
-                className="bg-white rounded-xl p-5 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                className={`bg-white rounded-xl p-4 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 cursor-pointer animate-fade-in-up`}
+                style={{ animationDelay: `${index * 100 + 200}ms` }}
               >
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <Icon className={stat.color} size={20} />
-                  <span className="text-2xl font-bold" style={{ color: colors.navy }}>{stat.number}</span>
+                <div className="flex items-center justify-center gap-2 mb-0.5">
+                  <Icon style={{ color: stat.color }} size={18} className="animate-bounce-slow" />
+                  <span className="text-xl font-bold" style={{ color: colors.navy }}>{stat.number}</span>
                 </div>
-                <p className="text-xs text-gray-500 uppercase tracking-wider">{stat.label}</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider">{stat.label}</p>
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* Filter and Search Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-2xl shadow-lg p-6">
+      {/* Filter and Search Section with Animation */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className={`bg-white rounded-2xl shadow-lg p-5 transition-all duration-1000 transform ${
+          animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+        }`} style={{ animationDelay: '300ms' }}>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             {/* Filter Buttons */}
             <div className="flex flex-wrap gap-2">
-              <div className="flex items-center gap-2 text-sm font-medium text-gray-500 mr-2">
-                <FaFilter size={14} />
+              <div className="flex items-center gap-1.5 text-xs font-medium text-gray-500 mr-1">
+                <FaFilter size={12} />
                 Filter:
               </div>
               {filterOptions.map((option) => (
                 <button
                   key={option}
                   onClick={() => setSelectedFilter(option)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 hover:scale-105 ${
                     selectedFilter === option
-                      ? 'text-white'
+                      ? 'text-white shadow-md'
                       : 'text-gray-600 hover:bg-gray-100'
                   }`}
                   style={{
@@ -303,54 +338,54 @@ const Testimonials = () => {
             </div>
 
             {/* Search Bar */}
-            <div className="relative w-full md:w-64">
+            <div className="relative w-full md:w-56">
               <input
                 type="text"
-                placeholder="Search testimonials..."
+                placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 pl-10 rounded-full border border-gray-200 focus:outline-none focus:ring-2 transition-all duration-300"
+                className="w-full px-3 py-1.5 pl-8 rounded-full text-sm border border-gray-200 focus:outline-none focus:ring-2 transition-all duration-300"
                 style={{ 
                   borderColor: searchTerm ? colors.teal : '#e5e7eb',
-                  focusRing: colors.teal
                 }}
               />
-              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+              <FaSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" size={12} />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  <FaTimes size={14} />
+                  <FaTimes size={12} />
                 </button>
               )}
             </div>
           </div>
 
           {/* Results Count */}
-          <div className="mt-4 text-sm text-gray-500">
+          <div className="mt-3 text-xs text-gray-500">
             Showing {filteredTestimonials.length} of {testimonials.length} testimonials
           </div>
         </div>
       </div>
 
       {/* Testimonials Grid */}
-      <section className="py-8">
+      <section className="py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {filteredTestimonials.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="text-6xl mb-4">🔍</div>
+            <div className="text-center py-12 animate-fade-in-up">
+              <div className="text-5xl mb-3">🔍</div>
               <h3 className="text-xl font-semibold" style={{ color: colors.navy }}>No testimonials found</h3>
-              <p className="text-gray-500 mt-2">Try adjusting your search or filter criteria</p>
+              <p className="text-gray-500 text-sm mt-1">Try adjusting your search or filter criteria</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {filteredTestimonials.map((testimonial, index) => (
                 <div 
                   key={testimonial.id}
-                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden"
+                  className={`group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden relative animate-fade-in-up`}
                   style={{
-                    transform: hoveredCard === index ? 'translateY(-8px)' : 'translateY(0)',
+                    animationDelay: `${index * 100 + 400}ms`,
+                    transform: hoveredCard === index ? 'translateY(-6px)' : 'translateY(0)',
                     boxShadow: hoveredCard === index ? `0 20px 40px ${colors.teal}22` : '0 4px 6px -1px rgba(0,0,0,0.1)'
                   }}
                   onMouseEnter={() => setHoveredCard(index)}
@@ -358,38 +393,38 @@ const Testimonials = () => {
                 >
                   {/* Gradient Top Border */}
                   <div style={{ 
-                    height: '4px',
+                    height: '3px',
                     background: `linear-gradient(90deg, ${colors.navy} 0%, ${colors.teal} 50%, ${colors.navy} 100%)`
                   }}></div>
 
-                  <div className="p-6">
+                  <div className="p-5">
                     {/* Header */}
-                    <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-center gap-3 mb-3">
                       <div className="relative flex-shrink-0">
                         <img 
                           src={testimonial.image} 
                           alt={testimonial.name}
-                          className="w-14 h-14 rounded-full object-cover border-2 transition-all duration-300 group-hover:scale-110"
+                          className="w-12 h-12 rounded-full object-cover border-2 transition-all duration-300 group-hover:scale-110"
                           style={{ borderColor: colors.teal }}
                         />
                         {testimonial.verified && (
-                          <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.teal }}>
-                            <FaUserCheck size={8} className="text-white" />
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.teal }}>
+                            <FaUserCheck size={7} className="text-white" />
                           </div>
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-base truncate" style={{ color: colors.navy }}>{testimonial.name}</h4>
-                        <div className="flex items-center gap-1 text-xs text-gray-500">
-                          <FaMapMarkerAlt size={10} />
+                        <h4 className="font-bold text-sm truncate" style={{ color: colors.navy }}>{testimonial.name}</h4>
+                        <div className="flex items-center gap-1 text-[10px] text-gray-500">
+                          <FaMapMarkerAlt size={9} />
                           <span>{testimonial.location}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Type Badge and Rating */}
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs" style={{ 
+                    <div className="flex items-center justify-between mb-2.5">
+                      <div className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px]" style={{ 
                         backgroundColor: colors.teal + '15',
                         color: colors.teal
                       }}>
@@ -404,36 +439,36 @@ const Testimonials = () => {
                       <FaQuoteLeft 
                         className="absolute -top-1 -left-1 opacity-10 transition-all duration-300 group-hover:opacity-20" 
                         style={{ color: colors.teal }} 
-                        size={16}
+                        size={12}
                       />
-                      <p className="text-gray-600 text-sm leading-relaxed pl-5 line-clamp-4">
+                      <p className="text-gray-600 text-xs leading-relaxed pl-4 line-clamp-6">
                         {testimonial.text}
                       </p>
                       <FaQuoteRight 
                         className="absolute -bottom-1 -right-1 opacity-10 transition-all duration-300 group-hover:opacity-20" 
                         style={{ color: colors.teal }} 
-                        size={16}
+                        size={12}
                       />
                     </div>
 
                     {/* Footer */}
-                    <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <FaCalendarAlt size={12} className="text-gray-400" />
-                        <span className="text-xs text-gray-400">{testimonial.date}</span>
+                    <div className="mt-3 pt-2.5 border-t border-gray-100 flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <FaCalendarAlt size={10} className="text-gray-400" />
+                        <span className="text-[10px] text-gray-400">{testimonial.date}</span>
                       </div>
                       {testimonial.verified && (
                         <div className="flex items-center gap-1">
-                          <FaCheckCircle style={{ color: colors.teal }} size={12} />
-                          <span className="text-xs text-gray-500">Verified</span>
+                          <FaCheckCircle style={{ color: colors.teal }} size={10} />
+                          <span className="text-[10px] text-gray-500">Verified</span>
                         </div>
                       )}
                     </div>
                   </div>
 
                   {/* Hover Overlay Icon */}
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-110">
-                    <FaTruck size={16} style={{ color: colors.teal }} />
+                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-110">
+                    <FaTruck size={14} style={{ color: colors.teal }} />
                   </div>
                 </div>
               ))}
@@ -442,41 +477,98 @@ const Testimonials = () => {
         </div>
       </section>
 
-      {/* Call to Action Section */}
-      <section className="py-16" style={{ backgroundColor: colors.tealLight }}>
+      {/* Call to Action Section with Animations */}
+      <section className="py-12" style={{ backgroundColor: colors.tealLight }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: colors.navy }}>
+          <div className={`bg-white rounded-2xl shadow-xl p-6 md:p-10 text-center transition-all duration-1000 transform ${
+            animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+          }`} style={{ animationDelay: '600ms' }}>
+            <h2 className="text-2xl md:text-3xl font-bold mb-3 animate-gradient" style={{ color: colors.navy }}>
               Ready to Be Our Next <span style={{ color: colors.teal }}>Happy Customer?</span>
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-8">
+            <p className="text-gray-600 text-sm max-w-2xl mx-auto mb-6">
               Join hundreds of satisfied customers who have experienced the GBOOMBA difference. 
               Let us make your move stress-free and memorable.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 to="/services"
-                className="inline-flex items-center justify-center gap-2 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                className="inline-flex items-center justify-center gap-2 text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-105 group relative overflow-hidden"
                 style={{ backgroundColor: colors.navy }}
                 onMouseEnter={(e) => e.target.style.backgroundColor = colors.teal}
                 onMouseLeave={(e) => e.target.style.backgroundColor = colors.navy}
               >
-                Explore Services <FaArrowRight />
+                <span className="relative z-10">Explore Services <FaArrowRight className="inline ml-1 group-hover:translate-x-1 transition-transform duration-300" size={12} /></span>
+                <span className="absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></span>
               </Link>
               <a
                 href="https://wa.me/918111002100"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-green-700 hover:shadow-lg hover:-translate-y-1"
+                className="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-green-700 hover:shadow-xl hover:-translate-y-1 hover:scale-105 group"
               >
-                <FaTruck /> Get Free Quote
+                <FaWhatsapp className="group-hover:animate-pulse" size={14} /> Get Free Quote
               </a>
             </div>
           </div>
         </div>
       </section>
 
-     
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+        }
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+        @keyframes gradientPulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.6; }
+        }
+        .animate-fade-in-up {
+          animation: fadeInUp 0.6s ease-out forwards;
+          opacity: 0;
+        }
+        .animate-fade-in-up-delayed {
+          animation: fadeInUp 0.6s ease-out 0.3s forwards;
+          opacity: 0;
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+          animation: float 6s ease-in-out 3s infinite;
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 2s ease-in-out infinite;
+        }
+        .animate-bounce-slow {
+          animation: bounce-slow 2s ease-in-out infinite;
+        }
+        .animate-gradient {
+          background: linear-gradient(135deg, #1a2a4a, #008080);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        .line-clamp-4 {
+          display: -webkit-box;
+          -webkit-line-clamp: 4;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      `}</style>
     </div>
   );
 };

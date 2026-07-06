@@ -1,13 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   FaArrowRight, 
   FaCheckCircle,
   FaTruck,
-  FaHome,
-  FaBuilding,
-  FaStore,
-  FaBroom,
   FaPaintRoller,
   FaWrench,
   FaTools,
@@ -24,210 +20,338 @@ import {
   FaCalendarCheck,
   FaHeart,
   FaRocket,
-  FaLeaf,
   FaRegSmile,
   FaRegLightbulb,
   FaRegHandshake,
   FaRegClock,
-  FaRegStar
+  FaRegStar,
+  FaHome,
+  FaBuilding,
+  FaStore,
+  FaBroom,
+  FaLeaf,
+  FaTrophy,
+  FaMedal,
+  FaHeadset,
+  FaBoxes,
+  FaCouch,
+  FaChair,
+  FaBed,
+  FaDoorOpen,
+  FaLightbulb,
+  FaPlug,
+  FaHammer,
+  FaScrewdriver,
+  FaCogs,
+  FaClipboardList,
+  FaFileInvoice,
+  FaPhoneAlt,
+  FaWhatsappSquare,
+  FaMapMarkerAlt,
+  FaMailBulk,
+  FaGlobe,
+  FaGem,
+  FaCrown
 } from 'react-icons/fa';
-import { MdCleaningServices, MdElectricalServices } from 'react-icons/md';
+import { MdCleaningServices, MdElectricalServices, MdPlumbing, MdAcUnit } from 'react-icons/md';
+import collage from "../../assets/collage.png";
 
 const About = () => {
-  // Colors matching the brand
+  const [animateIn, setAnimateIn] = useState(false);
+
+  useEffect(() => {
+    setAnimateIn(true);
+  }, []);
+
+  // Colors matching HomePage - Navy and Teal
   const colors = {
     navy: '#1a2a4a',
     navyDark: '#0f1a33',
     teal: '#008080',
     tealDark: '#006666',
     tealLight: '#e6f7f7',
+    gold: '#FFD700',
+    white: '#ffffff',
+    lightGray: '#f8f9fa'
   };
 
-  // Core values data
-  const coreValues = [
-    {
-      icon: FaRegHandshake,
-      title: 'Integrity',
-      description: 'We operate with honesty and transparency in all our dealings.'
-    },
-    {
-      icon: FaRegStar,
-      title: 'Excellence',
-      description: 'We strive for the highest quality in every service we provide.'
-    },
-    {
-      icon: FaRegClock,
-      title: 'Punctuality',
-      description: 'We value your time and always deliver on schedule.'
-    },
-    {
-      icon: FaRegSmile,
-      title: 'Customer Focus',
-      description: 'Your satisfaction is our top priority and driving force.'
-    }
-  ];
-
-  // Why choose us data
+  // Why Choose Us Data
   const whyChooseUs = [
     {
-      icon: FaShieldAlt,
-      title: '100% Insured',
-      description: 'Full insurance coverage for your belongings and peace of mind.'
+      icon: FaAward,
+      title: '4+ Years Experience',
+      description: 'Industry expertise since 2019 with continuous learning and improvement'
+    },
+    {
+      icon: FaMedal,
+      title: 'High-Quality Service',
+      description: 'High-quality service standards with attention to every detail'
     },
     {
       icon: FaUsers,
-      title: 'Expert Team',
-      description: 'Trained, experienced, and background-verified professionals.'
+      title: 'Skilled Professionals',
+      description: 'Skilled & professional experienced team dedicated to excellence'
     },
     {
-      icon: FaClock,
-      title: 'On-Time Service',
-      description: 'Punctual service delivery with respect for your schedule.'
+      icon: FaThumbsUp,
+      title: '100% Satisfaction',
+      description: 'Customer satisfaction focused approach with guaranteed results'
     },
     {
-      icon: FaStar,
-      title: 'Quality Guarantee',
-      description: 'We stand behind our work with a 100% satisfaction guarantee.'
-    },
-    {
-      icon: FaRocket,
-      title: 'Innovation',
-      description: 'Modern techniques and eco-friendly solutions for better results.'
-    },
-    {
-      icon: FaHeart,
-      title: 'Customer Care',
-      description: '24/7 support and personalized attention to your needs.'
+      icon: FaHeadset,
+      title: '24/7 Support',
+      description: 'Round the clock customer support for all your service needs'
     }
   ];
 
-  // Team stats
+  // Promises Data
+  const promises = [
+    { icon: FaRegSmile, text: 'No Spoiled Weekends' },
+    { icon: FaShieldAlt, text: 'Scratch-Free Walls & Furniture' },
+    { icon: FaClock, text: 'Quiet & Neighbor-Friendly Service' },
+    { icon: FaStar, text: 'Surprise Your Loved Ones with a Smooth Move' },
+    { icon: FaBoxes, text: 'Special Care for Every Item' },
+    { icon: FaCheckCircle, text: 'Hassle-Free Relocation Experience' }
+  ];
+
+  // Services Data - Redesigned
+ const services = [
+    {
+      icon: FaTruck,
+      title: 'Packers & Movers',
+      desc: 'Safe and hassle-free relocation solutions for homes and businesses.',
+      tags: ['Household', 'Office', 'Shop'],
+      color: '#27ae60'
+    },
+    {
+      icon: MdCleaningServices,
+      title: 'Cleaning Services',
+      desc: 'Professional cleaning solutions for homes and businesses.',
+      tags: ['Normal', 'Deep', 'Tank', 'Bathroom'],
+      color: '#008080'
+    },
+    {
+      icon: FaPaintRoller,
+      title: 'Painting Services',
+      desc: 'Quality interior & exterior solutions for homes and businesses.',
+      tags: ['Interior', 'Exterior', 'Touch-up', 'Rental Painting'],
+      color: '#e67e22'
+    },
+    {
+      icon: MdElectricalServices,
+      title: 'Electrical & Plumbing',
+      desc: 'Installation, repair & maintenance for homes and businesses.',
+      tags: ['Installation', 'Relocation', 'Maintenance'],
+      color: '#3498db'
+    },
+    {
+      icon: MdAcUnit,
+      title: 'AC Technician',
+      desc: 'Expert cooling solutions for homes and businesses.',
+      tags: ['Installation', 'Relocation', 'Services'],
+      color: '#00bcd4'
+    },
+    {
+      icon: FaHammer,
+      title: 'Carpentry Services',
+      desc: 'Custom woodwork and repair solutions for homes and businesses.',
+      tags: ['Furniture', 'Doors', 'Windows'],
+      color: '#d4a017'
+    },
+    // ✨ NEW: Transport Services
+    {
+      icon: FaTruck, // or you can use FaBus, FaShuttleVan, or any transport icon
+      title: 'Transport Services',
+      desc: 'Reliable and affordable transport solutions for goods, luggage, and group travel.',
+      tags: ['Local', 'Outstation', 'Luggage', 'Group Travel'],
+      color: '#2c3e50'
+    }
+  ];
+
+  // Stats
   const stats = [
-    { number: '4+', label: 'Years of Experience', icon: FaAward },
+    { number: '4+', label: 'Years Experience', icon: FaAward },
     { number: '20+', label: 'Team Members', icon: FaUsers },
     { number: '500+', label: 'Happy Customers', icon: FaThumbsUp },
     { number: '100%', label: 'Satisfaction Rate', icon: FaCalendarCheck }
   ];
 
-  // Services we offer (brief)
-  const servicesBrief = [
-    { icon: MdCleaningServices, name: 'Cleaning Services' },
-    { icon: FaPaintRoller, name: 'Painting Services' },
-    { icon: MdElectricalServices, name: 'Electrical Services' },
-    { icon: FaWrench, name: 'AC Technician' },
-    { icon: FaTruck, name: 'Packers & Movers' },
-    { icon: FaTools, name: 'Individual Services' }
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
+    <div className="min-h-screen" style={{ backgroundColor: colors.lightGray }}>
+      {/* Hero Section - Minimized Height */}
       <div className="relative overflow-hidden" style={{ backgroundColor: colors.navy }}>
-        {/* Decorative elements */}
+        <div style={{
+          height: '3px',
+          background: `linear-gradient(90deg, ${colors.navy} 0%, ${colors.teal} 50%, ${colors.navy} 100%)`,
+          animation: 'gradientPulse 3s ease-in-out infinite'
+        }}></div>
+
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -mr-32 -mt-32"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full -ml-32 -mb-32"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-white/20 rounded-full"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-white/10 rounded-full"></div>
+          <div className="absolute top-0 right-0 w-48 h-48 bg-white rounded-full -mr-24 -mt-24 animate-float"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full -ml-24 -mb-24 animate-float-delayed"></div>
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
+        <div className={`relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12 transition-all duration-1000 transform ${
+          animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+        }`}>
           <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4" style={{ backgroundColor: colors.teal + '33' }}>
-              <FaHeart className="text-teal-light" size={14} />
-              <span className="text-xs font-medium text-white tracking-wider">ABOUT GBOOMBA</span>
+            {/* Logo - Smaller */}
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <div 
+                className="w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-500 hover:scale-110 hover:rotate-12"
+                style={{ 
+                  background: `linear-gradient(135deg, ${colors.navy}, ${colors.teal})`,
+                  boxShadow: '0 4px 12px rgba(0,128,128,0.3)'
+                }}
+              >
+                <span className="text-white text-2xl font-bold">G</span>
+              </div>
+              <div className="text-left">
+                <h1 className="text-3xl md:text-4xl font-extrabold">
+                  <span style={{ color: colors.teal }}>GBOOMBA</span>
+                </h1>
+                <p className="text-[10px] font-medium text-white/70 tracking-wider">COMPLETE HOME SERVICES</p>
+              </div>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-              Your Trusted Partner for <span className="text-teal-light">Home Solutions</span>
-            </h1>
-            <p className="text-white/80 text-base md:text-lg max-w-2xl mx-auto">
-              We're dedicated to making your life easier with professional, reliable, and 
-              high-quality home services. From cleaning to moving, we've got you covered.
+
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-2 animate-pulse-slow" style={{ backgroundColor: colors.teal + '33' }}>
+              <FaTruck className="text-white" size={12} />
+              <span className="text-[10px] font-medium text-white tracking-wider">PACKERS & MOVERS</span>
+            </div>
+
+            <h2 className="text-lg md:text-xl font-bold text-white mb-1 leading-tight animate-fade-in-up">
+              Complete Relocation, Repair & Maintenance Solutions
+            </h2>
+            <p className="text-white/70 text-xs max-w-2xl mx-auto leading-relaxed animate-fade-in-up-delayed">
+              Skilled Support for Shifting, Arrangements & Daily Tasks for Homes and Businesses.
             </p>
+
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              <a
+                href="tel:918111002100"
+                className="inline-flex items-center gap-1.5 text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-105 group"
+                style={{ backgroundColor: colors.teal }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = colors.tealDark}
+                onMouseLeave={(e) => e.target.style.backgroundColor = colors.teal}
+              >
+                <FaPhoneAlt className="group-hover:animate-pulse" size={12} /> Call Now: 81 1100 2100
+              </a>
+              <a
+                href="https://wa.me/918111002100"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 bg-green-600 text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 hover:bg-green-700 hover:shadow-lg hover:-translate-y-1 hover:scale-105 group"
+              >
+                <FaWhatsapp className="group-hover:animate-pulse" size={12} /> WhatsApp
+              </a>
+            </div>
           </div>
         </div>
 
-        {/* Bottom Wave */}
         <div className="absolute bottom-0 left-0 right-0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 40" className="w-full">
-            <path fill="#f8fafc" d="M0,30L80,28C160,26,320,22,480,24C640,26,800,34,960,32C1120,30,1280,18,1360,12L1440,6L1440,40L1360,40C1280,40,1120,40,960,40C800,40,640,40,480,40C320,40,160,40,80,40L0,40Z"></path>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 30" className="w-full">
+            <path fill={colors.lightGray} d="M0,20L80,18C160,16,320,12,480,14C640,16,800,24,960,22C1120,20,1280,8,1360,6L1440,4L1440,30L1360,30C1280,30,1120,30,960,30C800,30,640,30,480,30C320,30,160,30,80,30L0,30Z"></path>
           </svg>
         </div>
       </div>
 
-      {/* Stats Section */}
+      {/* Stats Section with Stagger Animation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {stats.map((stat, index) => (
             <div 
               key={index}
-              className="bg-white rounded-xl p-5 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className={`bg-white rounded-xl p-4 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 cursor-pointer animate-fade-in-up`}
+              style={{ animationDelay: `${index * 100 + 200}ms` }}
             >
-              <div className="flex items-center justify-center gap-2 mb-1">
-                <stat.icon style={{ color: colors.teal }} size={20} />
-                <span className="text-2xl font-bold" style={{ color: colors.navy }}>{stat.number}</span>
+              <div className="flex items-center justify-center gap-2 mb-0.5">
+                <stat.icon style={{ color: colors.teal }} size={18} className="animate-bounce-slow" />
+                <span className="text-xl font-bold" style={{ color: colors.navy }}>{stat.number}</span>
               </div>
-              <p className="text-xs text-gray-500 uppercase tracking-wider">{stat.label}</p>
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider">{stat.label}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Our Story Section */}
-      <section className="py-16">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4" style={{ backgroundColor: colors.teal + '22' }}>
-                <FaHeart style={{ color: colors.teal }} size={14} />
-                <span className="text-xs font-medium" style={{ color: colors.teal }}>OUR STORY</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: colors.navy }}>
-                Built on Trust, Driven by <span style={{ color: colors.teal }}>Excellence</span>
-              </h2>
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                GBOOMBA was founded with a simple mission: to provide exceptional home services 
-                that people can truly rely on. We understand that your home is your sanctuary, 
-                and we treat it with the respect and care it deserves.
-              </p>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                Over the past 4+ years, we've grown from a small team of dedicated professionals 
-                to a full-service home solutions company, serving hundreds of satisfied customers 
-                across the region. Our commitment to quality, punctuality, and customer satisfaction 
-                has made us the preferred choice for home services.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <span className="flex items-center gap-2 text-sm" style={{ color: colors.navy }}>
-                  <FaCheckCircle style={{ color: colors.teal }} size={16} />
-                  Professional Team
-                </span>
-                <span className="flex items-center gap-2 text-sm" style={{ color: colors.navy }}>
-                  <FaCheckCircle style={{ color: colors.teal }} size={16} />
-                  Quality Guaranteed
-                </span>
-                <span className="flex items-center gap-2 text-sm" style={{ color: colors.navy }}>
-                  <FaCheckCircle style={{ color: colors.teal }} size={16} />
-                  100% Insured
-                </span>
+          <div className="text-center mb-8">
+            <div 
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3 animate-pulse-slow"
+              style={{ backgroundColor: colors.teal + '22' }}
+            >
+              <FaHeart style={{ color: colors.teal }} size={12} />
+              <span className="text-[10px] font-medium" style={{ color: colors.teal }}>YOUR HAPPINESS IS OUR PRIDE</span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold animate-gradient" style={{ color: colors.navy }}>
+              Our Story – <span style={{ color: colors.teal }}>GBOOMBA</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            {/* Left Content - Story Text */}
+            <div className={`transition-all duration-1000 transform ${
+              animateIn ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
+            }`}>
+              <div className="bg-gray-50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300" style={{ borderLeft: `4px solid ${colors.teal}` }}>
+                <h3 className="text-xl font-bold mb-3" style={{ color: colors.navy }}>What is GBOOMBA?</h3>
+                
+                <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                  <strong>GBOOMBA</strong> started in 2019 as a simple transportation service. During every move, our customers shared their struggles and the stress they faced while shifting homes and offices. Their stories made us realize that people needed more than just transportation—they needed support, care, and a reliable team they could trust.
+                </p>
+                
+                <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                  That realization inspired us to create something better. Since 2022, with 4+ years of industry experience, continuous learning, and a commitment to quality service, <strong>GBOOMBA</strong> has grown into a complete home service company.
+                </p>
+                
+                <div className="p-3 rounded-lg mb-3 transition-all duration-300 hover:shadow-md" style={{ backgroundColor: colors.teal + '11', borderLeft: `3px solid ${colors.teal}` }}>
+                  <p className="text-gray-700 text-sm leading-relaxed font-medium">
+                    <FaQuoteLeft className="inline mr-1" style={{ color: colors.teal }} size={12} />
+                    "For us, GBOOMBA is not just a business. It is about reducing stress, creating smiles, and bringing happiness to our customers."
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">- G. Boopathi, Proprietor</p>
+                </div>
+
+                <div className="mt-4 p-3 rounded-lg text-center transition-all duration-300 hover:shadow-xl" style={{ backgroundColor: colors.navy }}>
+                  <p className="text-white text-sm font-semibold">One Call or WhatsApp is All It Takes!</p>
+                  <div className="flex flex-wrap justify-center gap-2 mt-2">
+                    <a
+                      href="tel:918111002100"
+                      className="inline-flex items-center gap-1.5 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 hover:scale-105 group"
+                      style={{ backgroundColor: colors.teal }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = colors.tealDark}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = colors.teal}
+                    >
+                      <FaPhoneAlt className="group-hover:animate-pulse" size={10} /> +91 81 1100 2100
+                    </a>
+                    <a
+                      href="https://wa.me/918111002100"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 hover:bg-green-700 hover:scale-105 group"
+                    >
+                      <FaWhatsapp className="group-hover:animate-pulse" size={10} /> WhatsApp
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+
+            {/* Right Content - Collage Image */}
+            <div className={`flex justify-center transition-all duration-1000 transform ${
+              animateIn ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
+            }`} style={{ transitionDelay: '300ms' }}>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl max-w-md w-full group" style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
                 <img 
-                  src="https://images.unsplash.com/photo-1521791055366-0d553872125f?w=600&h=400&fit=crop" 
-                  alt="Team working together"
-                  className="w-full h-80 object-cover"
+                  src={collage} 
+                  alt="GBOOMBA Home Services Collage" 
+                  className="w-full h-auto object-cover transition-all duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 60%, ${colors.navy}cc 100%)` }}></div>
-              </div>
-              {/* Floating badge */}
-              <div className="absolute -bottom-4 -right-4 bg-white rounded-xl shadow-xl p-4 flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.tealLight }}>
-                  <FaUsers style={{ color: colors.teal }} size={24} />
-                </div>
-                <div>
-                  <p className="text-sm font-bold" style={{ color: colors.navy }}>20+ Experts</p>
-                  <p className="text-xs text-gray-500">Dedicated team</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
+                  <p className="text-white text-xs font-semibold text-center">Your Trusted Home Service Partner</p>
                 </div>
               </div>
             </div>
@@ -235,68 +359,42 @@ const About = () => {
         </div>
       </section>
 
-      {/* Core Values */}
-      <section className="py-16" style={{ backgroundColor: colors.tealLight }}>
+      {/* Why Choose GBOOMBA Section */}
+      <section className="py-12" style={{ backgroundColor: colors.tealLight }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4" style={{ backgroundColor: colors.teal + '22' }}>
-              <FaRegLightbulb style={{ color: colors.teal }} size={14} />
-              <span className="text-xs font-medium" style={{ color: colors.teal }}>CORE VALUES</span>
+          <div className="text-center mb-8">
+            <div 
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3"
+              style={{ backgroundColor: colors.teal + '22' }}
+            >
+              <FaHandshake style={{ color: colors.teal }} size={12} />
+              <span className="text-[10px] font-medium" style={{ color: colors.teal }}>WHY CHOOSE GBOOMBA</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: colors.navy }}>
-              What We <span style={{ color: colors.teal }}>Believe In</span>
+            <h2 className="text-2xl md:text-3xl font-bold animate-gradient" style={{ color: colors.navy }}>
+              Why Choose <span style={{ color: colors.teal }}>GBOOMBA</span>?
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mt-2">
-              Our values guide everything we do, from the way we treat our customers to how we deliver our services.
+            <p className="text-gray-600 text-sm max-w-2xl mx-auto mt-1">
+              Qualified for excellence in every service we provide
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {coreValues.map((value, index) => (
-              <div 
-                key={index}
-                className="bg-white rounded-xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
-              >
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: colors.tealLight }}>
-                  <value.icon style={{ color: colors.teal }} size={28} />
-                </div>
-                <h3 className="font-bold text-lg mb-2" style={{ color: colors.navy }}>{value.title}</h3>
-                <p className="text-sm text-gray-500">{value.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose Us */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4" style={{ backgroundColor: colors.teal + '22' }}>
-              <FaHandshake style={{ color: colors.teal }} size={14} />
-              <span className="text-xs font-medium" style={{ color: colors.teal }}>WHY CHOOSE US</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: colors.navy }}>
-              Why GBOOMBA is Your <span style={{ color: colors.teal }}>Best Choice</span>
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mt-2">
-              We combine expertise, reliability, and a customer-first approach to deliver exceptional service every time.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {whyChooseUs.map((item, index) => (
               <div 
                 key={index}
-                className="bg-gray-50 rounded-xl p-6 hover:bg-white hover:shadow-xl transition-all duration-300 group"
+                className={`bg-white rounded-xl p-4 hover:shadow-xl transition-all duration-300 group animate-fade-in-up`}
+                style={{ animationDelay: `${index * 100 + 400}ms` }}
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: colors.tealLight }}>
-                    <item.icon style={{ color: colors.teal }} size={22} />
+                <div className="flex items-start gap-3">
+                  <div 
+                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12"
+                    style={{ backgroundColor: colors.tealLight }}
+                  >
+                    <item.icon style={{ color: colors.teal }} size={18} className="group-hover:animate-pulse" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-base mb-1" style={{ color: colors.navy }}>{item.title}</h3>
-                    <p className="text-sm text-gray-500">{item.description}</p>
+                    <h3 className="font-semibold text-sm mb-0.5 transition-all duration-300 group-hover:text-teal-600" style={{ color: colors.navy }}>{item.title}</h3>
+                    <p className="text-xs text-gray-500 leading-relaxed">{item.description}</p>
                   </div>
                 </div>
               </div>
@@ -305,111 +403,342 @@ const About = () => {
         </div>
       </section>
 
-      {/* Services We Offer */}
-      <section className="py-16" style={{ backgroundColor: colors.tealLight }}>
+      {/* Our Promises Section - Left Image, Right Content */}
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4" style={{ backgroundColor: colors.teal + '22' }}>
-              <FaTools style={{ color: colors.teal }} size={14} />
-              <span className="text-xs font-medium" style={{ color: colors.teal }}>OUR SERVICES</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            {/* Left Side - Image Grid */}
+            <div className={`transition-all duration-1000 transform ${
+              animateIn ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
+            }`} style={{ transitionDelay: '200ms' }}>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl group">
+                <div className="bg-gradient-to-br from-navy to-teal p-1 rounded-2xl">
+                  <div className="bg-white rounded-2xl p-6">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-3">
+                        <div className="bg-teal-50 rounded-xl p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                          <FaTruck className="mx-auto mb-1" style={{ color: colors.teal }} size={20} />
+                          <p className="text-[10px] font-semibold" style={{ color: colors.navy }}>Packers & Movers</p>
+                        </div>
+                        <div className="bg-teal-50 rounded-xl p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                          <MdCleaningServices className="mx-auto mb-1" style={{ color: colors.teal }} size={20} />
+                          <p className="text-[10px] font-semibold" style={{ color: colors.navy }}>Cleaning Services</p>
+                        </div>
+                        <div className="bg-teal-50 rounded-xl p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                          <FaPaintRoller className="mx-auto mb-1" style={{ color: colors.teal }} size={20} />
+                          <p className="text-[10px] font-semibold" style={{ color: colors.navy }}>Painting Services</p>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="bg-teal-50 rounded-xl p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                          <MdElectricalServices className="mx-auto mb-1" style={{ color: colors.teal }} size={20} />
+                          <p className="text-[10px] font-semibold" style={{ color: colors.navy }}>Electrical & Plumbing</p>
+                        </div>
+                        <div className="bg-teal-50 rounded-xl p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                          <MdAcUnit className="mx-auto mb-1" style={{ color: colors.teal }} size={20} />
+                          <p className="text-[10px] font-semibold" style={{ color: colors.navy }}>AC Technician</p>
+                        </div>
+                        <div className="bg-teal-50 rounded-xl p-3 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                          <FaHammer className="mx-auto mb-1" style={{ color: colors.teal }} size={20} />
+                          <p className="text-[10px] font-semibold" style={{ color: colors.navy }}>Carpentry Services</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-3 text-center">
+                      <p className="text-xs font-bold" style={{ color: colors.navy }}>Complete Home Solutions</p>
+                      <div className="flex items-center justify-center gap-0.5 mt-0.5">
+                        <FaStar style={{ color: colors.gold }} size={10} />
+                        <FaStar style={{ color: colors.gold }} size={10} />
+                        <FaStar style={{ color: colors.gold }} size={10} />
+                        <FaStar style={{ color: colors.gold }} size={10} />
+                        <FaStar style={{ color: colors.gold }} size={10} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold" style={{ color: colors.navy }}>
-              What We <span style={{ color: colors.teal }}>Offer</span>
+
+            {/* Right Side - Content */}
+            <div className={`transition-all duration-1000 transform ${
+              animateIn ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
+            }`} style={{ transitionDelay: '400ms' }}>
+              <div 
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3"
+                style={{ backgroundColor: colors.teal + '22' }}
+              >
+                <FaCheckCircle style={{ color: colors.teal }} size={12} />
+                <span className="text-[10px] font-medium" style={{ color: colors.teal }}>OUR PROMISES</span>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold mb-3 animate-gradient" style={{ color: colors.navy }}>
+                Our <span style={{ color: colors.teal }}>Promises</span>
+              </h2>
+              <p className="text-gray-600 text-sm mb-4">
+                Sit back and relax while we take care of the hard work.
+              </p>
+
+              <div className="space-y-2">
+                {promises.map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <div 
+                      key={index} 
+                      className={`flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:shadow-md hover:translate-x-1 animate-fade-in-up`}
+                      style={{ 
+                        backgroundColor: colors.tealLight,
+                        animationDelay: `${index * 100 + 500}ms`
+                      }}
+                    >
+                      <Icon style={{ color: colors.teal }} size={14} className="flex-shrink-0 animate-bounce-slow" />
+                      <span className="text-xs text-gray-700">{item.text}</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-4 p-3 rounded-lg text-center transition-all duration-300 hover:shadow-xl" style={{ backgroundColor: colors.navy }}>
+                <p className="text-white text-sm font-semibold">Complete Home Services at Your Doorstep</p>
+                <div className="flex flex-wrap justify-center gap-2 mt-1">
+                  <span className="text-white/60 text-[10px]">✓ Quality</span>
+                  <span className="text-white/20">|</span>
+                  <span className="text-white/60 text-[10px]">✓ Trust</span>
+                  <span className="text-white/20">|</span>
+                  <span className="text-white/60 text-[10px]">✓ Reliability</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Services Section */}
+      <section className="py-12" style={{ backgroundColor: colors.tealLight }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <div 
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3"
+              style={{ backgroundColor: colors.teal + '22' }}
+            >
+              <FaTools style={{ color: colors.teal }} size={12} />
+              <span className="text-[10px] font-medium" style={{ color: colors.teal }}>OUR SERVICES</span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold animate-gradient" style={{ color: colors.navy }}>
+              Our <span style={{ color: colors.teal }}>Services</span>
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mt-2">
-              A comprehensive range of professional home services tailored to your needs.
+            <p className="text-gray-600 text-sm max-w-2xl mx-auto mt-1">
+              Complete home services at your doorstep
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {servicesBrief.map((service, index) => (
-              <Link 
-                key={index}
-                to="/services"
-                className="bg-white rounded-xl p-5 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
-              >
-                <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: colors.tealLight }}>
-                  <service.icon style={{ color: colors.teal }} size={24} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {services.map((service, index) => {
+              const Icon = service.icon;
+              return (
+                <div 
+                  key={index}
+                  className={`bg-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-500 group animate-fade-in-up relative overflow-hidden`}
+                  style={{ 
+                    animationDelay: `${index * 100 + 600}ms`,
+                    borderTop: `3px solid ${service.color}`
+                  }}
+                >
+                  <div 
+                    className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500"
+                    style={{ background: `linear-gradient(135deg, ${service.color}22, transparent)` }}
+                  ></div>
+                  
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div 
+                        className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6"
+                        style={{ backgroundColor: service.color + '22' }}
+                      >
+                        <Icon style={{ color: service.color }} size={20} />
+                      </div>
+                      <h3 className="text-base font-semibold transition-all duration-300 group-hover:text-teal-600" style={{ color: colors.navy }}>{service.title}</h3>
+                    </div>
+                    <p className="text-gray-600 text-xs leading-relaxed mb-2">{service.description}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {service.tags.slice(0, 4).map((tag, idx) => (
+                        <span 
+                          key={idx} 
+                          className="text-[10px] px-2 py-0.5 rounded-full transition-all duration-300 hover:scale-105"
+                          style={{ backgroundColor: service.color + '22', color: service.color }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      {service.tags.length > 4 && (
+                        <span className="text-[10px] text-gray-400">+{service.tags.length - 3}</span>
+                      )}
+                    </div>
+                    <div className="mt-3 pt-2 border-t border-gray-100">
+                      <Link
+                        to="/services"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold transition-all duration-300 group-hover:gap-2"
+                        style={{ color: service.color }}
+                      >
+                        Learn More <FaArrowRight size={10} />
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-xs font-medium" style={{ color: colors.navy }}>{service.name}</p>
-              </Link>
-            ))}
+              );
+            })}
           </div>
 
           <div className="text-center mt-8">
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+              className="inline-flex items-center gap-2 text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-105 group relative overflow-hidden"
               style={{ backgroundColor: colors.navy }}
               onMouseEnter={(e) => e.target.style.backgroundColor = colors.teal}
               onMouseLeave={(e) => e.target.style.backgroundColor = colors.navy}
             >
-              View All Services
-              <FaArrowRight />
+              <span className="relative z-10">View All Services</span>
+              <FaArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform duration-300" size={12} />
+              <span className="absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></span>
             </Link>
           </div>
         </div>
       </section>
 
       {/* Testimonial Section */}
-      <section className="py-16 bg-white">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4" style={{ backgroundColor: colors.teal + '22' }}>
-                <FaStar style={{ color: colors.teal }} size={14} />
-                <span className="text-xs font-medium" style={{ color: colors.teal }}>TESTIMONIAL</span>
+            <div className={`transition-all duration-1000 transform ${
+              animateIn ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
+            }`} style={{ transitionDelay: '700ms' }}>
+              <div 
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3"
+                style={{ backgroundColor: colors.teal + '22' }}
+              >
+                <FaStar style={{ color: colors.teal }} size={12} />
+                <span className="text-[10px] font-medium" style={{ color: colors.teal }}>TESTIMONIAL</span>
               </div>
               <div className="relative">
-                <FaQuoteLeft style={{ color: colors.teal }} size={30} className="mb-2 opacity-30" />
-                <p className="text-xl font-medium text-gray-700 leading-relaxed">
+                <FaQuoteLeft style={{ color: colors.teal }} size={30} className="mb-1 opacity-20" />
+                <p className="text-base font-medium text-gray-700 leading-relaxed">
                   "GBOOMBA provided exceptional service for our house relocation. 
                   The team was professional, careful, and completed everything on time. 
-                  Highly recommended for anyone looking for stress-free moving!"
+                  Highly recommended!"
                 </p>
               </div>
-              <div className="mt-4 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.tealLight }}>
-                  <span className="font-bold" style={{ color: colors.teal }}>RK</span>
+              <div className="mt-3 flex items-center gap-3">
+                <div 
+                  className="w-10 h-10 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: colors.tealLight }}
+                >
+                  <FaStar style={{ color: colors.teal }} size={16} />
                 </div>
                 <div>
-                  <p className="font-semibold" style={{ color: colors.navy }}>Rajesh Kumar</p>
-                  <p className="text-sm text-gray-500">Happy Customer, Coimbatore</p>
+                  <p className="text-sm font-semibold" style={{ color: colors.navy }}>Rajesh Kumar</p>
+                  <p className="text-xs text-gray-500">Coimbatore, Tamil Nadu</p>
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 rounded-2xl p-8 shadow-lg" style={{ border: `1px solid ${colors.teal}22` }}>
-              <h3 className="text-2xl font-bold mb-3" style={{ color: colors.navy }}>
-                Ready to Experience the GBOOMBA Difference?
+            
+            <div 
+              className={`bg-gray-50 rounded-2xl p-6 shadow-lg transition-all duration-1000 transform ${
+                animateIn ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
+              }`} 
+              style={{ 
+                transitionDelay: '800ms',
+                border: `1px solid ${colors.teal}22`
+              }}
+            >
+              <h3 className="text-xl font-bold mb-2 animate-gradient" style={{ color: colors.navy }}>
+                Ready to Experience the <span style={{ color: colors.teal }}>GBOOMBA</span> Difference?
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 text-sm mb-4 leading-relaxed">
                 Join hundreds of satisfied customers who trust us for their home service needs. 
                 Get in touch today for a free consultation.
               </p>
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <a
                   href="tel:918111002100"
-                  className="flex items-center justify-center gap-2 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1 w-full"
+                  className="flex items-center justify-center gap-2 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02] group relative overflow-hidden w-full"
                   style={{ backgroundColor: colors.navy }}
                   onMouseEnter={(e) => e.target.style.backgroundColor = colors.teal}
                   onMouseLeave={(e) => e.target.style.backgroundColor = colors.navy}
                 >
-                  <FaPhone /> Call Now: 81 1100 2100
+                  <span className="relative z-10"><FaPhoneAlt className="inline mr-1 group-hover:animate-pulse" size={12} /> Call Now: 81 1100 2100</span>
+                  <span className="absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></span>
                 </a>
                 <Link
                   to="/services"
-                  className="flex items-center justify-center gap-2 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1 w-full"
+                  className="flex items-center justify-center gap-2 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02] group relative overflow-hidden w-full"
                   style={{ backgroundColor: colors.teal }}
                   onMouseEnter={(e) => e.target.style.backgroundColor = colors.tealDark}
                   onMouseLeave={(e) => e.target.style.backgroundColor = colors.teal}
                 >
-                  Explore Services <FaArrowRight />
+                  <span className="relative z-10">Explore Services <FaArrowRight className="inline ml-1 group-hover:translate-x-1 transition-transform duration-300" size={12} /></span>
+                  <span className="absolute inset-0 bg-gradient-to-r from-teal-600 to-teal-800 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></span>
                 </Link>
+                <a
+                  href="https://wa.me/918111002100"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-green-700 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02] group"
+                >
+                  <FaWhatsapp className="group-hover:animate-pulse" size={14} /> Chat on WhatsApp
+                </a>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Animation Styles */}
+      <style>{`
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+        }
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+        @keyframes gradientPulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.6; }
+        }
+        .animate-fade-in-up {
+          animation: fadeInUp 0.6s ease-out forwards;
+          opacity: 0;
+        }
+        .animate-fade-in-up-delayed {
+          animation: fadeInUp 0.6s ease-out 0.3s forwards;
+          opacity: 0;
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+          animation: float 6s ease-in-out 3s infinite;
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 2s ease-in-out infinite;
+        }
+        .animate-bounce-slow {
+          animation: bounce-slow 2s ease-in-out infinite;
+        }
+        .animate-gradient {
+          background: linear-gradient(135deg, #1a2a4a, #008080);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+      `}</style>
     </div>
   );
 };

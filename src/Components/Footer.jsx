@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  FaPhone, 
+  FaPhoneAlt, 
   FaWhatsapp, 
   FaEnvelope, 
   FaMapMarkerAlt, 
@@ -13,10 +13,27 @@ import {
   FaStore,
   FaClock,
   FaShieldAlt,
-  FaArrowRight
+  FaArrowRight,
+  FaTruck,
+  FaStar,
+  FaHeart,
+  FaPaintRoller,
+  FaHammer,
+  FaBroom,
+  FaBolt,
+  FaBoxes,
+  FaCogs
 } from 'react-icons/fa';
+import { MdCleaningServices, MdElectricalServices, MdAcUnit } from 'react-icons/md';
+import logo from "../assets/logo.png"
 
 const Footer = () => {
+  const [animateIn, setAnimateIn] = useState(false);
+
+  useEffect(() => {
+    setAnimateIn(true);
+  }, []);
+
   // Logo Colors
   const colors = {
     navy: '#1a2a4a',
@@ -36,29 +53,32 @@ const Footer = () => {
     { name: 'Services', path: '/services' },
     { name: 'Gallery', path: '/gallery' },
     { name: 'Contact', path: '/contact' },
+    { name: 'Enquiry', path: '/enquiry' },
   ];
 
-  // Data for services
+  // Data for services - All 7 Services
   const services = [
-    { name: 'House Relocation', icon: FaHome },
-    { name: 'Office Relocation', icon: FaBuilding },
-    { name: 'Shop Relocation', icon: FaStore },
-    { name: 'Packing & Moving', icon: FaShieldAlt },
-    { name: 'Emergency Service', icon: FaClock },
+    { name: 'Packers & Movers', icon: FaTruck, color: '#27ae60' },
+    { name: 'Cleaning Services', icon: MdCleaningServices, color: '#008080' },
+    { name: 'Painting Services', icon: FaPaintRoller, color: '#e67e22' },
+    { name: 'Electrical & Plumbing', icon: MdElectricalServices, color: '#3498db' },
+    { name: 'Transport Services', icon: FaBoxes, color: '#8e44ad' },
+    { name: 'AC Technician', icon: MdAcUnit, color: '#00bcd4' },
+    { name: 'Carpentry Services', icon: FaHammer, color: '#d4a017' },
   ];
 
   // Data for social media
   const socialLinks = [
-    { icon: FaFacebook, url: '#', label: 'Facebook' },
-    { icon: FaInstagram, url: '#', label: 'Instagram' },
-    { icon: FaYoutube, url: '#', label: 'YouTube' },
+    { icon: FaFacebook, url: 'https://facebook.com', label: 'Facebook', color: '#1877f2' },
+    { icon: FaInstagram, url: 'https://instagram.com', label: 'Instagram', color: '#e4405f' },
+    { icon: FaYoutube, url: 'https://youtube.com', label: 'YouTube', color: '#ff0000' },
   ];
 
   return (
     <footer>
       {/* Gradient Top Border with Animation */}
       <div style={{ 
-        height: '4px',
+        height: '3px',
         background: `linear-gradient(90deg, ${colors.navy} 0%, ${colors.teal} 50%, ${colors.navy} 100%)`,
         backgroundSize: '200% 100%',
         animation: 'gradientMove 3s ease-in-out infinite',
@@ -78,13 +98,20 @@ const Footer = () => {
       <div style={{ 
         background: `linear-gradient(135deg, ${colors.navyDark} 0%, ${colors.navy} 50%, ${colors.navyLight} 100%)`
       }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {/* Company Info */}
-            <div>
-              <div className="flex items-center space-x-3 mb-4">
+            <div className={`transition-all duration-1000 transform ${
+              animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`} style={{ animationDelay: '100ms' }}>
+              <div className="flex items-center space-x-2 mb-3">
+                <div 
+                  className="w-10 h-10 rounded-xl flex items-center justify-center"
+                >
+                  <img src={logo} alt="GBOOMBA Logo" className="w-8 h-8 object-contain" />
+                </div>
                 <span 
-                  className="text-2xl font-extrabold tracking-wide"
+                  className="text-xl font-extrabold tracking-wide"
                   style={{
                     background: `linear-gradient(135deg, #ffffff 0%, ${colors.tealLight} 100%)`,
                     WebkitBackgroundClip: 'text',
@@ -95,37 +122,39 @@ const Footer = () => {
                   GBOOMBA
                 </span>
               </div>
-              <p className="text-gray-300 text-sm mb-4 leading-relaxed">
+              <p className="text-gray-300 text-xs mb-3 leading-relaxed">
                 Complete Home Solutions - Packers & Movers. We provide stress-free relocation services with care and professionalism.
               </p>
-              <div className="flex space-x-3">
+              <div className="flex space-x-2">
                 {socialLinks.map((social, index) => {
                   const Icon = social.icon;
                   return (
                     <a 
                       key={index}
                       href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       aria-label={social.label}
-                      className="transition-all duration-300 p-2 rounded-full"
+                      className="transition-all duration-300 p-2 rounded-full group"
                       style={{ 
                         color: '#9ca3af',
                         backgroundColor: `${colors.navy}44`,
                         border: `1px solid ${colors.teal}33`
                       }}
                       onMouseEnter={(e) => {
-                        e.target.style.color = colors.teal;
-                        e.target.style.transform = 'translateY(-3px)';
-                        e.target.style.borderColor = colors.teal;
-                        e.target.style.boxShadow = `0 0 20px ${colors.teal}44`;
+                        e.target.style.color = social.color;
+                        e.target.style.transform = 'translateY(-3px) scale(1.1)';
+                        e.target.style.borderColor = social.color;
+                        e.target.style.boxShadow = `0 0 20px ${social.color}44`;
                       }}
                       onMouseLeave={(e) => {
                         e.target.style.color = '#9ca3af';
-                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.transform = 'translateY(0) scale(1)';
                         e.target.style.borderColor = `${colors.teal}33`;
                         e.target.style.boxShadow = 'none';
                       }}
                     >
-                      <Icon size={18} />
+                      <Icon size={16} />
                     </a>
                   );
                 })}
@@ -133,9 +162,11 @@ const Footer = () => {
             </div>
 
             {/* Quick Links */}
-            <div>
+            <div className={`transition-all duration-1000 transform ${
+              animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`} style={{ animationDelay: '200ms' }}>
               <h3 
-                className="font-semibold text-lg mb-4 pb-2 border-b inline-block"
+                className="font-semibold text-sm mb-3 pb-1.5 border-b inline-block"
                 style={{
                   background: `linear-gradient(135deg, ${colors.tealLight} 0%, ${colors.teal} 100%)`,
                   WebkitBackgroundClip: 'text',
@@ -146,16 +177,15 @@ const Footer = () => {
               >
                 Quick Links
               </h3>
-              <ul className="space-y-2">
+              <ul className="space-y-1.5">
                 {quickLinks.map((item, index) => (
                   <li key={index}>
                     <Link 
                       to={item.path}
-                      className="flex items-center gap-2 text-gray-300 transition-all duration-200 text-sm group"
-                      style={{ color: '#d1d5db' }}
+                      className="flex items-center gap-2 text-gray-300 transition-all duration-200 text-xs group"
                       onMouseEnter={(e) => {
                         e.target.style.color = colors.tealLight;
-                        e.target.style.transform = 'translateX(5px)';
+                        e.target.style.transform = 'translateX(4px)';
                       }}
                       onMouseLeave={(e) => {
                         e.target.style.color = '#d1d5db';
@@ -163,7 +193,7 @@ const Footer = () => {
                       }}
                     >
                       <FaArrowRight 
-                        size={10} 
+                        size={8} 
                         style={{ color: colors.teal }}
                         className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                       />
@@ -174,10 +204,12 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Our Services */}
-            <div>
+            {/* Our Services - All 7 Services */}
+            <div className={`transition-all duration-1000 transform ${
+              animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`} style={{ animationDelay: '300ms' }}>
               <h3 
-                className="font-semibold text-lg mb-4 pb-2 border-b inline-block"
+                className="font-semibold text-sm mb-3 pb-1.5 border-b inline-block"
                 style={{
                   background: `linear-gradient(135deg, ${colors.tealLight} 0%, ${colors.teal} 100%)`,
                   WebkitBackgroundClip: 'text',
@@ -188,25 +220,24 @@ const Footer = () => {
               >
                 Our Services
               </h3>
-              <ul className="space-y-2">
+              <ul className="space-y-1.5">
                 {services.map((service, index) => {
                   const Icon = service.icon;
                   return (
                     <li key={index}>
                       <Link 
                         to="/services"
-                        className="flex items-center gap-2 text-gray-300 transition-all duration-200 text-sm group"
-                        style={{ color: '#d1d5db' }}
+                        className="flex items-center gap-2 text-gray-300 transition-all duration-200 text-xs group"
                         onMouseEnter={(e) => {
                           e.target.style.color = colors.tealLight;
-                          e.target.style.transform = 'translateX(5px)';
+                          e.target.style.transform = 'translateX(4px)';
                         }}
                         onMouseLeave={(e) => {
                           e.target.style.color = '#d1d5db';
                           e.target.style.transform = 'translateX(0)';
                         }}
                       >
-                        <Icon style={{ color: colors.teal }} size={14} />
+                        <Icon style={{ color: service.color || colors.teal }} size={12} />
                         {service.name}
                       </Link>
                     </li>
@@ -216,9 +247,11 @@ const Footer = () => {
             </div>
 
             {/* Contact Info */}
-            <div>
+            <div className={`transition-all duration-1000 transform ${
+              animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`} style={{ animationDelay: '400ms' }}>
               <h3 
-                className="font-semibold text-lg mb-4 pb-2 border-b inline-block"
+                className="font-semibold text-sm mb-3 pb-1.5 border-b inline-block"
                 style={{
                   background: `linear-gradient(135deg, ${colors.tealLight} 0%, ${colors.teal} 100%)`,
                   WebkitBackgroundClip: 'text',
@@ -229,80 +262,68 @@ const Footer = () => {
               >
                 Contact Us
               </h3>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3 text-gray-300 text-sm">
+              <ul className="space-y-2">
+                <li className="flex items-start gap-2.5 text-gray-300 text-xs">
                   <FaMapMarkerAlt 
-                    style={{ color: colors.teal, marginTop: '4px' }} 
-                    size={16}
+                    style={{ color: colors.teal, marginTop: '2px' }} 
+                    size={14}
                     className="transition-transform duration-300 hover:scale-110"
                   />
                   <span>
                     23/17, Mutthu Vinayagar Kovil Street,<br />
-                    Punjai Puliampatti, Erode District - 638459
+                    Punjai Puliampatti, Erode - 638459
                   </span>
                 </li>
-                <li 
-                  className="flex items-center gap-3 text-gray-300 text-sm transition-all duration-200 cursor-pointer"
-                  style={{ color: '#d1d5db' }}
-                  onMouseEnter={(e) => e.target.style.color = colors.tealLight}
-                  onMouseLeave={(e) => e.target.style.color = '#d1d5db'}
-                >
-                  <FaPhone style={{ color: colors.teal }} size={14} />
-                  <a href="tel:918111002100">81 1100 2100</a>
+                <li className="flex items-center gap-2.5 text-gray-300 text-xs transition-all duration-200 hover:text-teal-300">
+                  <FaPhoneAlt style={{ color: colors.teal }} size={12} />
+                  <a href="tel:918111002100" className="hover:text-teal-300 transition-colors duration-200">
+                    81 1100 2100
+                  </a>
                 </li>
-                <li 
-                  className="flex items-center gap-3 text-gray-300 text-sm transition-all duration-200"
-                  style={{ color: '#d1d5db' }}
-                  onMouseEnter={(e) => e.target.style.color = colors.tealLight}
-                  onMouseLeave={(e) => e.target.style.color = '#d1d5db'}
-                >
-                  <FaWhatsapp style={{ color: '#25D366' }} size={14} />
+                <li className="flex items-center gap-2.5 text-gray-300 text-xs transition-all duration-200 hover:text-teal-300">
+                  <FaWhatsapp style={{ color: '#25D366' }} size={12} />
                   <a 
                     href="https://wa.me/918111002100" 
                     target="_blank" 
                     rel="noopener noreferrer"
+                    className="hover:text-teal-300 transition-colors duration-200"
                   >
                     WhatsApp Us
                   </a>
                 </li>
-                <li 
-                  className="flex items-center gap-3 text-gray-300 text-sm transition-all duration-200"
-                  style={{ color: '#d1d5db' }}
-                  onMouseEnter={(e) => e.target.style.color = colors.tealLight}
-                  onMouseLeave={(e) => e.target.style.color = '#d1d5db'}
-                >
-                  <FaEnvelope style={{ color: colors.teal }} size={14} />
-                  <a href="mailto:gboombappy@gmail.com">gboombappy@gmail.com</a>
+                <li className="flex items-center gap-2.5 text-gray-300 text-xs transition-all duration-200 hover:text-teal-300">
+                  <FaEnvelope style={{ color: colors.teal }} size={12} />
+                  <a href="mailto:gboombappy@gmail.com" className="hover:text-teal-300 transition-colors duration-200">
+                    gboombappy@gmail.com
+                  </a>
                 </li>
               </ul>
 
-              {/* Enquire Button with Gradient */}
+              {/* Enquire Button */}
               <Link
                 to="/enquiry"
-                className="inline-block mt-4 text-white px-6 py-2.5 rounded-md font-semibold transition-all duration-300 shadow-md hover:shadow-lg relative overflow-hidden"
+                className="inline-block mt-3 text-white px-5 py-2 rounded-md font-semibold text-xs transition-all duration-300 shadow-md hover:shadow-xl relative overflow-hidden group"
                 style={{
                   background: `linear-gradient(135deg, ${colors.navy} 0%, ${colors.teal} 100%)`,
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-3px) scale(1.02)';
-                  e.target.style.boxShadow = `0 10px 25px ${colors.teal}55`;
+                  e.target.style.transform = 'translateY(-2px) scale(1.02)';
+                  e.target.style.boxShadow = `0 8px 20px ${colors.teal}55`;
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.transform = 'translateY(0) scale(1)';
                   e.target.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.1)';
                 }}
               >
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 flex items-center gap-1.5">
                   Get Free Quote
-                  <FaArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
+                  <FaArrowRight size={10} className="transition-transform duration-300 group-hover:translate-x-1" />
                 </span>
                 <span 
-                  className="absolute inset-0 opacity-0 transition-opacity duration-300"
+                  className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   style={{
                     background: `linear-gradient(135deg, ${colors.teal}33, ${colors.navy}33)`,
                   }}
-                  onMouseEnter={(e) => e.target.style.opacity = '1'}
-                  onMouseLeave={(e) => e.target.style.opacity = '0'}
                 ></span>
               </Link>
             </div>
@@ -310,17 +331,17 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom Bar with Gradient */}
+      {/* Bottom Bar */}
       <div style={{ 
         background: `linear-gradient(135deg, ${colors.navyDark} 0%, ${colors.navy} 100%)`,
-        borderTop: `2px solid ${colors.teal}`
+        borderTop: `1px solid ${colors.teal}`
       }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-300 text-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-2">
+            <p className="text-gray-300 text-[10px] text-center">
               &copy; {currentYear} <span style={{ color: colors.teal }}>GBOOMBA</span> Home Solutions. All rights reserved.
             </p>
-            <div className="flex items-center gap-4 text-xs">
+            <div className="flex items-center gap-3 text-[10px] flex-wrap justify-center">
               <span 
                 className="font-medium transition-all duration-300 hover:scale-105 cursor-default"
                 style={{

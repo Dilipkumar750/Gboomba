@@ -1,7 +1,45 @@
-import React, { useState } from 'react';
-import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaCheck, FaArrowRight } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaPhoneAlt, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaCheck, FaArrowRight, FaTimes } from 'react-icons/fa';
 
 const Enquiry = () => {
+  const [animateIn, setAnimateIn] = useState(false);
+
+  useEffect(() => {
+    setAnimateIn(true);
+  }, []);
+
+  // Category and Subcategory Data
+  const serviceCategories = {
+    'Cleaning Services': {
+      subcategories: ['One-Time Cleaning', 'Regular Cleaning', 'Basic Cleaning', 'Deep Cleaning'],
+      icon: '🧹'
+    },
+    'Painting Services': {
+      subcategories: ['Rental House Painting', 'Interior Painting', 'Exterior Painting', 'Waterproof Coating', 'Touch-up'],
+      icon: '🎨'
+    },
+    'Electrical & Plumbing Services': {
+      subcategories: ['Installation Works', 'Repair & Maintenance', 'Wiring & Fitting Works', 'Leakage & Pipe Repair'],
+      icon: '⚡'
+    },
+    'Packers & Movers': {
+      subcategories: ['Complete Relocation Package', 'Household Shifting', 'Office Relocation', 'Shop Relocation', 'Packing & Unpacking', 'Loading & Unloading'],
+      icon: '🚚'
+    },
+    'Transport Services': {
+      subcategories: ['Mini Door Vehicle', 'Pickup Vehicle', 'Eicher Vehicle', 'Other Long-Chassis Vehicle', 'Local Transport', 'Long-Distance Transport'],
+      icon: '🚐'
+    },
+    'AC Installation & Services': {
+      subcategories: ['Old House to New House Shifting', 'New AC Installation', 'General Service', 'Deep Service', 'Gas Charging'],
+      icon: '❄️'
+    },
+    'Carpentry Services': {
+      subcategories: ['Furniture Assembly', 'Furniture Repair', 'Door & Window Works', 'Modular Kitchen Works', 'Wardrobe & Storage Works'],
+      icon: '🔨'
+    }
+  };
+
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
@@ -12,11 +50,14 @@ const Enquiry = () => {
     officeSqft: '',
     shopType: '',
     shopArea: '',
-    serviceType: 'enquiry'
+    serviceType: 'enquiry',
+    category: '',
+    subcategories: []
   });
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
+  const [selectedSubcategories, setSelectedSubcategories] = useState([]);
 
   // Logo Colors
   const colors = {
@@ -30,10 +71,128 @@ const Enquiry = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error for this field
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
+  };
+
+  const handleCategoryChange = (category) => {
+    setFormData(prev => ({
+      ...prev,
+      category: category,
+      subcategories: []
+    }));
+    setSelectedSubcategories([]);
+    if (errors.category) {
+      setErrors(prev => ({ ...prev, category: '' }));
+    }
+  };
+
+  const handleSubcategoryToggle = (subcategory) => {
+    setSelectedSubcategories(prev => {
+      if (prev.includes(subcategory)) {
+        return prev.filter(item => item !== subcategory);
+      } else {
+        return [...prev, subcategory];
+      }
+    });
+    
+    setFormData(prev => ({
+      ...prev,
+      subcategories: selectedSubcategories.includes(subcategory)
+        ? prev.subcategories.filter(item => item !== subcategory)
+        : [...prev.subcategories, subcategory]
+    }));
+  };
+
+  // Format date for WhatsApp message
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Not specified';
+    const date = new Date(dateString);
+    return date.toLocaleString('en-IN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
+  // Generate WhatsApp message
+  const generateWhatsAppMessage = () => {
+    const relocationTypeMap = {
+      'house': '🏠 House',
+      'office': '🏢 Office',
+      'shop': '🏪 Shop'
+    };
+
+    const serviceTypeMap = {
+      'emergency': '🚨 Emergency Service',
+      'enquiry': '📋 Quotation (Enquiry)'
+    };
+
+    let message = `📋 *NEW SERVICE ENQUIRY - GBOOMBA HOME SERVICES*\n`;
+    message += `═══════════════════════════\n\n`;
+    
+    message += `📌 *WORK TYPE*\n`;
+    message += `${serviceTypeMap[formData.serviceType] || 'Not specified'}\n\n`;
+    
+    message += `📌 *SERVICE CATEGORY*\n`;
+    message += `${formData.category || 'Not selected'}\n\n`;
+    
+    if (selectedSubcategories.length > 0) {
+      message += `📌 *SELECTED SERVICES*\n`;
+      selectedSubcategories.forEach((service, index) => {
+        message += `  ${index + 1}. ${service}\n`;
+      });
+      message += `\n`;
+    }
+    
+    message += `👤 *CUSTOMER DETAILS*\n`;
+    message += `─────────────────\n`;
+    message += `👤 Name: ${formData.name || 'Not provided'}\n`;
+    message += `📱 Mobile: ${formData.mobile || 'Not provided'}\n`;
+    message += `📍 Address: ${formData.address || 'Not provided'}\n`;
+    message += `📅 Date & Time: ${formatDate(formData.shiftingDate)}\n\n`;
+    
+    message += `📌 *RELOCATION TYPE*\n`;
+    message += `${relocationTypeMap[formData.relocationType] || 'Not selected'}\n\n`;
+    
+    if (formData.relocationType === 'house' && formData.homeBHK) {
+      message += `🏠 *House Details*\n`;
+      message += `BHK: ${formData.homeBHK}\n\n`;
+    }
+    
+    if (formData.relocationType === 'office' && formData.officeSqft) {
+      message += `🏢 *Office Details*\n`;
+      message += `Area: ${formData.officeSqft} sq.ft\n\n`;
+    }
+    
+    if (formData.relocationType === 'shop') {
+      if (formData.shopType) {
+        message += `🏪 *Shop Details*\n`;
+        message += `Shop Type: ${formData.shopType}\n`;
+      }
+      if (formData.shopArea) {
+        message += `Shop Area: ${formData.shopArea} sq.ft\n`;
+      }
+      if (formData.shopType || formData.shopArea) {
+        message += `\n`;
+      }
+    }
+    
+    message += `═══════════════════════════\n`;
+    message += `📩 *GBOOMBA HOME SERVICES*\n`;
+    message += `📞 Contact: 81 1100 21000\n`;
+    message += `🌐 *Complete Home Solutions*\n`;
+    message += `• Cleaning • Painting • Electrical & Plumbing\n`;
+    message += `• AC Technician • Packers & Movers • Transport\n`;
+    message += `• Carpentry Services\n`;
+    message += `═══════════════════════════\n`;
+    message += `_This is an automated enquiry from the website._`;
+    
+    return encodeURIComponent(message);
   };
 
   const validateForm = () => {
@@ -56,6 +215,12 @@ const Enquiry = () => {
     if (!formData.relocationType) {
       newErrors.relocationType = 'Please select a relocation type';
     }
+    if (!formData.category) {
+      newErrors.category = 'Please select at least one service category';
+    }
+    if (selectedSubcategories.length === 0) {
+      newErrors.subcategories = 'Please select at least one service';
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -65,7 +230,6 @@ const Enquiry = () => {
     e.preventDefault();
     
     if (!validateForm()) {
-      // Scroll to first error
       const firstError = document.querySelector('.error-message');
       if (firstError) {
         firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -73,7 +237,15 @@ const Enquiry = () => {
       return;
     }
 
-    console.log('Form submitted:', formData);
+    // Generate WhatsApp message and open WhatsApp
+    const whatsappMessage = generateWhatsAppMessage();
+    const phoneNumber = '918111002100'; // Remove the + for URL
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${whatsappMessage}`;
+    
+    // Open WhatsApp in new tab
+    window.open(whatsappUrl, '_blank');
+    
+    // Show success message
     setFormSubmitted(true);
     
     // Reset form after 5 seconds
@@ -89,81 +261,89 @@ const Enquiry = () => {
         officeSqft: '',
         shopType: '',
         shopArea: '',
-        serviceType: 'enquiry'
+        serviceType: 'enquiry',
+        category: '',
+        subcategories: []
       });
+      setSelectedSubcategories([]);
     }, 5000);
   };
 
+  const today = new Date().toISOString().slice(0, 16);
+
+  // Get current category's subcategories
+  const currentSubcategories = formData.category ? serviceCategories[formData.category]?.subcategories || [] : [];
+
   return (
-    <div className="min-h-screen py-12" style={{ backgroundColor: '#f8fafc' }}>
+    <div className="min-h-screen py-8" style={{ backgroundColor: '#f8fafc' }}>
       <div className="container mx-auto px-4 max-w-4xl">
-        <div className="bg-white rounded-lg shadow-xl overflow-hidden">
+        <div className={`bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-1000 transform ${
+          animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+        }`}>
           {/* Header with Gradient */}
           <div style={{ 
             background: `linear-gradient(135deg, ${colors.navy} 0%, ${colors.teal} 100%)`,
-            padding: '32px 24px'
+            padding: '24px 20px'
           }}>
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center text-3xl backdrop-blur-sm">
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-2xl backdrop-blur-sm animate-bounce-slow">
                 📋
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white">Customer Requirement Form</h1>
-                <p className="text-white/80 mt-1">Fill in your details and we'll get back to you shortly</p>
+                <h1 className="text-2xl font-bold text-white">Customer Requirement Form</h1>
+                <p className="text-white/80 text-sm mt-0.5">Fill in your details and we'll get back to you shortly</p>
               </div>
             </div>
           </div>
 
           {/* Emergency Service Banner */}
-          <div className="px-6 py-4 border-b" style={{ backgroundColor: colors.tealLight }}>
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">🚨</span>
+          <div className="px-5 py-3 border-b" style={{ backgroundColor: colors.tealLight }}>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xl animate-pulse">🚨</span>
                 <div>
-                  <h3 className="font-semibold" style={{ color: colors.navy }}>EMERGENCY SERVICE</h3>
-                  <p className="text-sm" style={{ color: colors.navy }}>Call our team for immediate assistance</p>
+                  <h3 className="font-semibold text-sm" style={{ color: colors.navy }}>EMERGENCY SERVICE</h3>
+                  <p className="text-xs" style={{ color: colors.navy }}>Call our team for immediate assistance</p>
                 </div>
               </div>
-              <div className="flex gap-3 flex-wrap">
+              <div className="flex gap-2 flex-wrap">
                 <a 
                   href="tel:918111002100" 
-                  className="text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 shadow-md hover:shadow-lg"
+                  className="text-white px-4 py-1.5 rounded-lg flex items-center gap-1.5 text-sm transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
                   style={{ 
                     backgroundColor: colors.navy,
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.backgroundColor = colors.teal;
-                    e.target.style.transform = 'translateY(-2px)';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.backgroundColor = colors.navy;
-                    e.target.style.transform = 'translateY(0)';
                   }}
                 >
-                  <FaPhone /> 81 1100 2100
+                  <FaPhoneAlt size={12} /> 81 1100 2100
                 </a>
                 <a 
                   href="https://wa.me/918111002100" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 shadow-md hover:shadow-lg hover:bg-green-700 hover:-translate-y-0.5"
+                  className="bg-green-600 text-white px-4 py-1.5 rounded-lg flex items-center gap-1.5 text-sm transition-all duration-300 shadow-md hover:shadow-lg hover:bg-green-700 hover:-translate-y-0.5"
                 >
-                  <FaWhatsapp /> WhatsApp
+                  <FaWhatsapp size={14} /> WhatsApp
                 </a>
               </div>
             </div>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="px-6 py-8">
+          <form onSubmit={handleSubmit} className="px-5 py-6">
             {/* Work Type */}
-            <div className="mb-6">
-              <label className="block font-semibold text-gray-700 mb-2">
+            <div className="mb-5">
+              <label className="block font-semibold text-gray-700 text-sm mb-2">
                 Work Type <span className="text-red-500">*</span>
               </label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <label 
-                  className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                  className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
                     formData.serviceType === 'emergency' 
                       ? 'border-teal bg-teal-light' 
                       : 'border-gray-200 hover:border-teal hover:bg-gray-50'
@@ -175,15 +355,15 @@ const Enquiry = () => {
                     value="emergency"
                     checked={formData.serviceType === 'emergency'}
                     onChange={handleChange}
-                    className="mr-3 w-4 h-4 accent-teal"
+                    className="mr-2 w-4 h-4 accent-teal"
                   />
                   <div>
-                    <span className="font-medium">Emergency Service</span>
-                    <p className="text-sm text-gray-500">Quick site visit within your enquiry submitting</p>
+                    <span className="font-medium text-sm">Emergency Service</span>
+                    <p className="text-xs text-gray-500">Quick site visit within your enquiry</p>
                   </div>
                 </label>
                 <label 
-                  className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                  className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
                     formData.serviceType === 'enquiry' 
                       ? 'border-teal bg-teal-light' 
                       : 'border-gray-200 hover:border-teal hover:bg-gray-50'
@@ -195,20 +375,93 @@ const Enquiry = () => {
                     value="enquiry"
                     checked={formData.serviceType === 'enquiry'}
                     onChange={handleChange}
-                    className="mr-3 w-4 h-4 accent-teal"
+                    className="mr-2 w-4 h-4 accent-teal"
                   />
                   <div>
-                    <span className="font-medium">Quotation (Enquiry)</span>
-                    <p className="text-sm text-gray-500">Our team will contact you</p>
+                    <span className="font-medium text-sm">Quotation (Enquiry)</span>
+                    <p className="text-xs text-gray-500">Our team will contact you</p>
                   </div>
                 </label>
               </div>
             </div>
 
+            {/* Service Categories */}
+            <div className="mb-5">
+              <label className="block text-gray-700 font-medium text-sm mb-2">
+                Which Service Are You Looking For? <span className="text-red-500">*</span>
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto p-1">
+                {Object.keys(serviceCategories).map((category) => (
+                  <label
+                    key={category}
+                    className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                      formData.category === category
+                        ? 'border-teal bg-teal-light shadow-md'
+                        : 'border-gray-200 hover:border-teal hover:bg-gray-50'
+                    }`}
+                    onClick={() => handleCategoryChange(category)}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.category === category}
+                      onChange={() => handleCategoryChange(category)}
+                      className="mr-2 w-4 h-4 accent-teal"
+                    />
+                    <span className="text-sm">
+                      {serviceCategories[category].icon} {category}
+                    </span>
+                  </label>
+                ))}
+              </div>
+              {errors.category && (
+                <p className="text-red-500 text-xs mt-1 error-message">{errors.category}</p>
+              )}
+            </div>
+
+            {/* Subcategories - Dynamic based on selected category */}
+            {formData.category && currentSubcategories.length > 0 && (
+              <div className="mb-5 p-4 rounded-lg" style={{ backgroundColor: colors.tealLight }}>
+                <label className="block text-gray-700 font-medium text-sm mb-2">
+                  Select Services under <span className="font-bold" style={{ color: colors.teal }}>
+                    {formData.category}
+                  </span> <span className="text-red-500">*</span>
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {currentSubcategories.map((subcategory) => (
+                    <label
+                      key={subcategory}
+                      className={`flex items-center p-2.5 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                        selectedSubcategories.includes(subcategory)
+                          ? 'border-teal bg-white shadow-md'
+                          : 'border-gray-300 bg-white/70 hover:border-teal'
+                      }`}
+                      onClick={() => handleSubcategoryToggle(subcategory)}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedSubcategories.includes(subcategory)}
+                        onChange={() => handleSubcategoryToggle(subcategory)}
+                        className="mr-2 w-4 h-4 accent-teal"
+                      />
+                      <span className="text-sm">{subcategory}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.subcategories && (
+                  <p className="text-red-500 text-xs mt-1 error-message">{errors.subcategories}</p>
+                )}
+                {selectedSubcategories.length > 0 && (
+                  <p className="text-xs mt-2" style={{ color: colors.teal }}>
+                    Selected: {selectedSubcategories.length} service(s)
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Personal Details */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-700 font-medium mb-2">
+                <label className="block text-gray-700 font-medium text-sm mb-1.5">
                   Full Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -216,7 +469,7 @@ const Enquiry = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${
+                  className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 transition-all duration-200 ${
                     errors.name 
                       ? 'border-red-500 focus:ring-red-500' 
                       : 'border-gray-300 focus:ring-teal focus:border-teal'
@@ -224,11 +477,11 @@ const Enquiry = () => {
                   placeholder="Enter your full name"
                 />
                 {errors.name && (
-                  <p className="text-red-500 text-sm mt-1 error-message">{errors.name}</p>
+                  <p className="text-red-500 text-xs mt-1 error-message">{errors.name}</p>
                 )}
               </div>
               <div>
-                <label className="block text-gray-700 font-medium mb-2">
+                <label className="block text-gray-700 font-medium text-sm mb-1.5">
                   Mobile Number <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -236,7 +489,7 @@ const Enquiry = () => {
                   name="mobile"
                   value={formData.mobile}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${
+                  className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 transition-all duration-200 ${
                     errors.mobile 
                       ? 'border-red-500 focus:ring-red-500' 
                       : 'border-gray-300 focus:ring-teal focus:border-teal'
@@ -245,21 +498,21 @@ const Enquiry = () => {
                   maxLength="10"
                 />
                 {errors.mobile && (
-                  <p className="text-red-500 text-sm mt-1 error-message">{errors.mobile}</p>
+                  <p className="text-red-500 text-xs mt-1 error-message">{errors.mobile}</p>
                 )}
               </div>
             </div>
 
             <div className="mt-4">
-              <label className="block text-gray-700 font-medium mb-2">
+              <label className="block text-gray-700 font-medium text-sm mb-1.5">
                 Address <span className="text-red-500">*</span>
               </label>
               <textarea
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                rows="3"
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${
+                rows="2"
+                className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 transition-all duration-200 ${
                   errors.address 
                     ? 'border-red-500 focus:ring-red-500' 
                     : 'border-gray-300 focus:ring-teal focus:border-teal'
@@ -267,12 +520,12 @@ const Enquiry = () => {
                 placeholder="Enter your complete address"
               />
               {errors.address && (
-                <p className="text-red-500 text-sm mt-1 error-message">{errors.address}</p>
+                <p className="text-red-500 text-xs mt-1 error-message">{errors.address}</p>
               )}
             </div>
 
             <div className="mt-4">
-              <label className="block text-gray-700 font-medium mb-2">
+              <label className="block text-gray-700 font-medium text-sm mb-1.5">
                 Shifting Date & Time <span className="text-red-500">*</span>
               </label>
               <input
@@ -280,25 +533,26 @@ const Enquiry = () => {
                 name="shiftingDate"
                 value={formData.shiftingDate}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${
+                min={today}
+                className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 transition-all duration-200 ${
                   errors.shiftingDate 
                     ? 'border-red-500 focus:ring-red-500' 
                     : 'border-gray-300 focus:ring-teal focus:border-teal'
                 }`}
               />
               {errors.shiftingDate && (
-                <p className="text-red-500 text-sm mt-1 error-message">{errors.shiftingDate}</p>
+                <p className="text-red-500 text-xs mt-1 error-message">{errors.shiftingDate}</p>
               )}
             </div>
 
             {/* Relocation Type */}
-            <div className="mt-6">
-              <label className="block text-gray-700 font-medium mb-2">
+            <div className="mt-5">
+              <label className="block text-gray-700 font-medium text-sm mb-2">
                 Relocation Type <span className="text-red-500">*</span>
               </label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <label 
-                  className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                  className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
                     formData.relocationType === 'house' 
                       ? 'border-teal bg-teal-light' 
                       : 'border-gray-200 hover:border-teal hover:bg-gray-50'
@@ -310,12 +564,12 @@ const Enquiry = () => {
                     value="house"
                     checked={formData.relocationType === 'house'}
                     onChange={handleChange}
-                    className="mr-3 w-4 h-4 accent-teal"
+                    className="mr-2 w-4 h-4 accent-teal"
                   />
-                  🏠 Old House to New House
+                  <span className="text-sm">🏠 House</span>
                 </label>
                 <label 
-                  className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                  className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
                     formData.relocationType === 'office' 
                       ? 'border-teal bg-teal-light' 
                       : 'border-gray-200 hover:border-teal hover:bg-gray-50'
@@ -327,12 +581,12 @@ const Enquiry = () => {
                     value="office"
                     checked={formData.relocationType === 'office'}
                     onChange={handleChange}
-                    className="mr-3 w-4 h-4 accent-teal"
+                    className="mr-2 w-4 h-4 accent-teal"
                   />
-                  🏢 Office Relocation
+                  <span className="text-sm">🏢 Office</span>
                 </label>
                 <label 
-                  className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                  className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
                     formData.relocationType === 'shop' 
                       ? 'border-teal bg-teal-light' 
                       : 'border-gray-200 hover:border-teal hover:bg-gray-50'
@@ -344,150 +598,176 @@ const Enquiry = () => {
                     value="shop"
                     checked={formData.relocationType === 'shop'}
                     onChange={handleChange}
-                    className="mr-3 w-4 h-4 accent-teal"
+                    className="mr-2 w-4 h-4 accent-teal"
                   />
-                  🏪 Shop Relocation
+                  <span className="text-sm">🏪 Shop</span>
                 </label>
               </div>
               {errors.relocationType && (
-                <p className="text-red-500 text-sm mt-1 error-message">{errors.relocationType}</p>
+                <p className="text-red-500 text-xs mt-1 error-message">{errors.relocationType}</p>
               )}
             </div>
 
             {/* Property Details */}
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Home (BHK)</label>
+                <label className="block text-gray-700 font-medium text-sm mb-1.5">Home (BHK)</label>
                 <input
                   type="text"
                   name="homeBHK"
                   value={formData.homeBHK}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-teal transition-all duration-200"
+                  className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal focus:border-teal transition-all duration-200"
                   placeholder="e.g., 2 BHK"
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Office (Sq.ft)</label>
+                <label className="block text-gray-700 font-medium text-sm mb-1.5">Office (Sq.ft)</label>
                 <input
                   type="text"
                   name="officeSqft"
                   value={formData.officeSqft}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-teal transition-all duration-200"
-                  placeholder="Enter office area in sq.ft"
+                  className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal focus:border-teal transition-all duration-200"
+                  placeholder="Enter office area"
                 />
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Shop Type</label>
+                <label className="block text-gray-700 font-medium text-sm mb-1.5">Shop Type</label>
                 <input
                   type="text"
                   name="shopType"
                   value={formData.shopType}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-teal transition-all duration-200"
+                  className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal focus:border-teal transition-all duration-200"
                   placeholder="e.g., Retail, Grocery"
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Shop Area (Sq.ft)</label>
+                <label className="block text-gray-700 font-medium text-sm mb-1.5">Shop Area (Sq.ft)</label>
                 <input
                   type="text"
                   name="shopArea"
                   value={formData.shopArea}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal focus:border-teal transition-all duration-200"
-                  placeholder="Enter shop area in sq.ft"
+                  className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal focus:border-teal transition-all duration-200"
+                  placeholder="Enter shop area"
                 />
               </div>
             </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="mt-8 w-full text-white py-3 rounded-lg font-semibold text-lg transition-all duration-300 shadow-md hover:shadow-lg relative overflow-hidden group"
-              style={{
-                background: `linear-gradient(135deg, ${colors.navy} 0%, ${colors.teal} 100%)`,
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 10px 30px rgba(0,128,128,0.3)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.1)';
-              }}
-            >
-              <span className="flex items-center justify-center gap-2">
-                Submit Enquiry
-                <FaArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
-              </span>
-            </button>
-
-            {/* Success Message */}
-            {formSubmitted && (
-              <div className="mt-4 p-4 rounded-lg text-center animate-fadeIn">
-                <div className="flex items-center justify-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                    <FaCheck className="text-green-600 text-xl" />
-                  </div>
-                  <div className="text-left">
-                    <p className="font-semibold text-green-700">✓ Enquiry submitted successfully!</p>
-                    <p className="text-sm text-green-600">Our team will contact you shortly.</p>
-                  </div>
+            {/* Selected Services Summary */}
+            {selectedSubcategories.length > 0 && (
+              <div className="mt-4 p-3 rounded-lg" style={{ backgroundColor: colors.tealLight }}>
+                <p className="text-xs font-medium" style={{ color: colors.teal }}>
+                  Selected Services:
+                </p>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {selectedSubcategories.map((service, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 bg-white rounded-full text-xs"
+                      style={{ color: colors.navy }}
+                    >
+                      {service}
+                      <button
+                        type="button"
+                        onClick={() => handleSubcategoryToggle(service)}
+                        className="text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <FaTimes size={10} />
+                      </button>
+                    </span>
+                  ))}
                 </div>
               </div>
             )}
 
-            <style>
-              {`
-                @keyframes fadeIn {
-                  from { opacity: 0; transform: translateY(-10px); }
-                  to { opacity: 1; transform: translateY(0); }
-                }
-                .animate-fadeIn {
-                  animation: fadeIn 0.5s ease-out;
-                }
-              `}
-            </style>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="mt-6 w-full text-white py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-xl relative overflow-hidden group"
+              style={{
+                background: `linear-gradient(135deg, ${colors.navy} 0%, ${colors.teal} 100%)`,
+              }}
+            >
+              <span className="flex items-center justify-center gap-2 relative z-10">
+                <FaWhatsapp size={16} />
+                Submit & Send via WhatsApp
+                <FaArrowRight className="transition-transform duration-300 group-hover:translate-x-1" size={14} />
+              </span>
+              <span className="absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></span>
+            </button>
+
+            {/* Success Message */}
+            {formSubmitted && (
+              <div className="mt-4 p-3 rounded-lg bg-green-50 border border-green-200 animate-fadeIn">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <FaCheck className="text-green-600 text-sm" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-green-700 text-sm">✓ Enquiry sent to WhatsApp!</p>
+                    <p className="text-xs text-green-600">Our team will contact you shortly.</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </form>
         </div>
 
         {/* Contact Info Cards */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow-lg p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl" style={{ backgroundColor: colors.tealLight }}>
-                <FaEnvelope style={{ color: colors.teal }} />
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white rounded-xl shadow-lg p-4 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.tealLight }}>
+                <FaEnvelope style={{ color: colors.teal }} size={16} />
               </div>
               <div>
-                <h3 className="font-semibold" style={{ color: colors.navy }}>Email Us</h3>
-                <a href="mailto:gboombappy@gmail.com" className="hover:underline transition-colors" style={{ color: colors.teal }}>
+                <h3 className="font-semibold text-sm" style={{ color: colors.navy }}>Email Us</h3>
+                <a href="mailto:gboombappy@gmail.com" className="text-sm hover:underline transition-colors" style={{ color: colors.teal }}>
                   gboombappy@gmail.com
                 </a>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow-lg p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl" style={{ backgroundColor: colors.tealLight }}>
-                <FaMapMarkerAlt style={{ color: colors.teal }} />
+          <div className="bg-white rounded-xl shadow-lg p-4 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.tealLight }}>
+                <FaMapMarkerAlt style={{ color: colors.teal }} size={16} />
               </div>
               <div>
-                <h3 className="font-semibold" style={{ color: colors.navy }}>Visit Us</h3>
-                <p className="text-gray-600 text-sm">
+                <h3 className="font-semibold text-sm" style={{ color: colors.navy }}>Visit Us</h3>
+                <p className="text-gray-600 text-xs">
                   23/17, Mutthu Vinayagar Kovil Street,<br />
-                  Punjai Puliampatti, Erode District - 638459
+                  Punjai Puliampatti, Erode - 638459
                 </p>
               </div>
             </div>
           </div>
         </div>
-
       </div>
+
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.5s ease-out;
+        }
+        .animate-bounce-slow {
+          animation: bounce-slow 2s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 };

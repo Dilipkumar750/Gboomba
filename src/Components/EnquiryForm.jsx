@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaPhone, FaWhatsapp } from 'react-icons/fa';
+import { FaPhoneAlt, FaWhatsapp } from 'react-icons/fa';
 
 const EnquiryForm = () => {
   const [form, setForm] = useState({

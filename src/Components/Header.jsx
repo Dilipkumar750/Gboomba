@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaBars, FaTimes, FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaBars, FaTimes, FaPhoneAlt, FaWhatsapp, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
 import logo from '../assets/logo.png';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -24,21 +33,28 @@ const Header = () => {
     { name: 'Contact', path: '/contact' },
   ];
 
-  // Logo Colors
-  const colors = {
-    navy: '#1a2a4a',
-    teal: '#008080',
-    tealLight: '#e6f7f7',
+  // Gradient colors
+  const gradients = {
+    primary: 'bg-gradient-to-r from-[#1a2a4a] via-[#1e3a6a] to-[#008080]',
+    secondary: 'bg-gradient-to-r from-[#008080] to-[#00b4b4]',
+    light: 'bg-gradient-to-r from-[#e6f7f7] via-[#d4f0f0] to-[#b8e8e8]',
+    navy: 'bg-gradient-to-r from-[#0f1a33] via-[#1a2a4a] to-[#1e3a6a]',
+    teal: 'bg-gradient-to-r from-[#008080] via-[#00a0a0] to-[#00b4b4]',
   };
 
   return (
-    <header className="sticky top-0 z-40">
-      {/* Top Header Bar - Email & Phone */}
+    <header 
+      className={`sticky top-0 z-50 transition-all duration-500 ${
+        scrolled ? 'shadow-2xl' : 'shadow-lg'
+      }`}
+    >
+      {/* Top Header Bar with gradient */}
       <div 
-        className="hidden md:block py-2"
+        className={`hidden md:block transition-all duration-500 ${
+          scrolled ? 'py-1 opacity-95' : 'py-2'
+        } ${gradients.navy}`}
         style={{ 
-          backgroundColor: colors.navy,
-          borderBottom: `2px solid ${colors.teal}`
+          borderBottom: '2px solid #008080'
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -46,17 +62,17 @@ const Header = () => {
             <div className="flex items-center space-x-6">
               <a 
                 href="mailto:gboombappy@gmail.com" 
-                className="flex items-center gap-2 text-white hover:text-teal-light transition-colors duration-200 text-sm"
+                className="flex items-center gap-2 text-white hover:text-teal-200 transition-all duration-300 text-sm group"
               >
-                <FaEnvelope size={14} />
-                gboombappy@gmail.com
+                <FaEnvelope size={14} className="group-hover:rotate-12 transition-transform duration-300" />
+                <span className="group-hover:translate-x-1 transition-transform duration-300">gboombappy@gmail.com</span>
               </a>
               <a 
                 href="tel:918111002100" 
-                className="flex items-center gap-2 text-white hover:text-teal-light transition-colors duration-200 text-sm"
+                className="flex items-center gap-2 text-white hover:text-teal-200 transition-all duration-300 text-sm group"
               >
-                <FaPhone size={14} />
-                81 1100 2100
+                <FaPhoneAlt size={14} className="group-hover:animate-pulse" />
+                <span className="group-hover:translate-x-1 transition-transform duration-300">81 1100 2100</span>
               </a>
             </div>
             <div className="flex items-center space-x-4">
@@ -64,14 +80,14 @@ const Header = () => {
                 href="https://wa.me/918111002100" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-white hover:text-teal-light transition-colors duration-200 text-sm"
+                className="flex items-center gap-2 text-white hover:text-green-300 transition-all duration-300 text-sm group"
               >
-                <FaWhatsapp size={14} />
-                WhatsApp
+                <FaWhatsapp size={14} className="group-hover:scale-110 transition-transform duration-300" />
+                <span className="group-hover:translate-x-1 transition-transform duration-300">WhatsApp</span>
               </a>
               <span className="text-white/30">|</span>
-              <span className="flex items-center gap-2 text-white/80 text-xs">
-                <FaMapMarkerAlt size={12} />
+              <span className="flex items-center gap-2 text-white/90 text-xs">
+                <FaMapMarkerAlt size={12} className="animate-pulse" style={{ color: '#00b4b4' }} />
                 Punjai Puliampatti, Erode
               </span>
             </div>
@@ -79,83 +95,74 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Main Header */}
+      {/* Main Header with gradient background */}
       <div 
-        className="bg-white shadow-lg"
-        style={{ borderBottom: `2px solid ${colors.tealLight}` }}
+        className={`transition-all duration-500 ${
+          scrolled ? 'bg-white/95 backdrop-blur-md' : 'bg-white'
+        }`}
+        style={{ 
+          borderBottom: `2px solid #e6f7f7`,
+          boxShadow: scrolled ? '0 4px 30px rgba(26,42,74,0.15)' : '0 4px 6px -1px rgba(26,42,74,0.08)'
+        }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            {/* Logo/Brand */}
-            <Link to="/" onClick={closeMenu} className="flex items-center space-x-3">
+          <div className={`flex justify-between items-center transition-all duration-500 ${
+            scrolled ? 'h-16' : 'h-20'
+          }`}>
+            {/* Logo/Brand with gradient text */}
+            <Link to="/" onClick={closeMenu} className="flex items-center space-x-3 group">
               <img 
                 src={logo} 
                 alt="GBOOMBA Home Solutions" 
-                className="h-14 w-auto object-contain"
+                className={`object-contain transition-all duration-500 ${
+                  scrolled ? 'h-12' : 'h-14'
+                }`}
               />
               <div className="hidden sm:block">
                 <span 
-                  className="text-2xl font-extrabold block leading-tight tracking-wide"
-                  style={{ color: colors.navy }}
+                  className="text-2xl font-extrabold block leading-tight tracking-wide transition-all duration-300 group-hover:scale-105 origin-left bg-gradient-to-r from-[#1a2a4a] via-[#1e3a6a] to-[#008080] bg-clip-text text-transparent"
                 >
                   GBOOMBA
                 </span>
                 <span 
-                  className="text-xs font-semibold block tracking-wider uppercase"
-                  style={{ color: colors.teal }}
+                  className="text-xs font-semibold block tracking-wider uppercase transition-all duration-300 group-hover:tracking-widest bg-gradient-to-r from-[#008080] to-[#00b4b4] bg-clip-text text-transparent"
                 >
                   Complete Home Solutions
                 </span>
               </div>
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Navigation with gradient underline */}
             <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className="px-3 py-2 rounded-md text-sm font-medium transition-all duration-200"
+                  className="relative px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 group"
                   style={{
-                    color: location.pathname === link.path ? colors.teal : '#4b5563',
-                    borderBottom: location.pathname === link.path ? `2px solid ${colors.teal}` : '2px solid transparent',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (location.pathname !== link.path) {
-                      e.target.style.color = colors.teal;
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (location.pathname !== link.path) {
-                      e.target.style.color = '#4b5563';
-                    }
+                    color: location.pathname === link.path ? '#008080' : '#4b5563',
                   }}
                 >
                   {link.name}
+                  <span 
+                    className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 ${
+                      location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
+                    } bg-gradient-to-r from-[#1a2a4a] via-[#1e3a6a] to-[#008080]`}
+                  ></span>
                 </Link>
               ))}
             </nav>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons with gradient */}
             <div className="hidden md:flex items-center space-x-3">
               <Link
                 to="/enquiry"
-                className="text-white px-6 py-2.5 rounded-md font-semibold transition-all duration-200 shadow-md hover:shadow-lg"
-                style={{ 
-                  backgroundColor: colors.navy,
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = colors.teal;
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 10px 20px rgba(0,0,0,0.2)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = colors.navy;
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.1)';
-                }}
+                className="relative overflow-hidden text-white px-6 py-2.5 rounded-md font-semibold transition-all duration-300 shadow-md hover:shadow-xl group bg-gradient-to-r from-[#1a2a4a] via-[#1e3a6a] to-[#008080]"
               >
-                Enquire Now
+                <span className="relative z-10">Enquire Now</span>
+                <span 
+                  className="absolute inset-0 transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0 bg-gradient-to-r from-[#008080] to-[#00b4b4]"
+                ></span>
               </Link>
             </div>
 
@@ -165,108 +172,132 @@ const Header = () => {
                 href="https://wa.me/918111002100"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition-colors duration-200"
+                className="bg-gradient-to-r from-green-500 to-green-600 text-white p-2 rounded-full hover:from-green-600 hover:to-green-700 transition-all duration-300 hover:scale-110 hover:shadow-lg"
               >
                 <FaWhatsapp size={18} />
               </a>
               <Link
                 to="/enquiry"
                 onClick={closeMenu}
-                className="text-white px-3 py-2 rounded-md text-sm font-semibold transition-colors duration-200"
-                style={{ backgroundColor: colors.navy }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = colors.teal}
-                onMouseLeave={(e) => e.target.style.backgroundColor = colors.navy}
+                className="text-white px-3 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:shadow-lg bg-gradient-to-r from-[#1a2a4a] to-[#1e3a6a] hover:from-[#008080] hover:to-[#00b4b4]"
               >
                 Enquire
               </Link>
               <button
                 onClick={toggleMenu}
-                className="focus:outline-none transition-colors duration-200 p-2"
-                style={{ color: colors.navy }}
-                onMouseEnter={(e) => e.target.style.color = colors.teal}
-                onMouseLeave={(e) => e.target.style.color = colors.navy}
+                className="focus:outline-none transition-all duration-300 p-2 rounded-lg hover:bg-gradient-to-r hover:from-[#e6f7f7] hover:to-[#d4f0f0]"
+                style={{ color: '#1a2a4a' }}
               >
-                {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+                {isMenuOpen ? (
+                  <FaTimes size={24} className="animate-spin-once" />
+                ) : (
+                  <FaBars size={24} className="animate-pulse-once" />
+                )}
               </button>
             </div>
           </div>
 
-          {/* Mobile Navigation Menu */}
-          {isMenuOpen && (
-            <nav className="md:hidden pb-4" style={{ borderTop: `1px solid ${colors.tealLight}` }}>
-              <div className="pt-2 pb-2 space-y-1">
-                {/* Mobile Contact Info */}
-                <div className="px-3 py-2 space-y-2 border-b border-gray-100 mb-2">
-                  <a 
-                    href="tel:918111002100" 
-                    className="flex items-center gap-2 text-sm font-medium"
-                    style={{ color: colors.navy }}
-                  >
-                    <FaPhone style={{ color: colors.teal }} />
-                    81 1100 2100
-                  </a>
-                  <a 
-                    href="mailto:gboombappy@gmail.com" 
-                    className="flex items-center gap-2 text-sm font-medium"
-                    style={{ color: colors.navy }}
-                  >
-                    <FaEnvelope style={{ color: colors.teal }} />
-                    gboombappy@gmail.com
-                  </a>
-                </div>
-
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    onClick={closeMenu}
-                    className="block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
-                    style={{
-                      color: location.pathname === link.path ? colors.teal : '#4b5563',
-                      backgroundColor: location.pathname === link.path ? colors.tealLight : 'transparent',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (location.pathname !== link.path) {
-                        e.target.style.backgroundColor = '#f9fafb';
-                        e.target.style.color = colors.teal;
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (location.pathname !== link.path) {
-                        e.target.style.backgroundColor = 'transparent';
-                        e.target.style.color = '#4b5563';
-                      }
-                    }}
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-                <div className="pt-4 px-3 space-y-2">
-                  <a
-                    href="https://wa.me/918111002100"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 font-medium text-sm p-3 rounded-lg transition-colors duration-200"
-                    style={{ 
-                      color: '#059669',
-                      backgroundColor: '#ecfdf5'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = '#d1fae5';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = '#ecfdf5';
-                    }}
-                  >
-                    <FaWhatsapp style={{ color: '#059669' }} />
-                    WhatsApp Us
-                  </a>
-                </div>
+          {/* Mobile Navigation Menu with gradient */}
+          <div 
+            className={`md:hidden overflow-hidden transition-all duration-500 ${
+              isMenuOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
+            }`}
+            style={{ borderTop: isMenuOpen ? '2px solid #e6f7f7' : 'none' }}
+          >
+            <div className="pt-2 pb-2 space-y-1">
+              {/* Mobile Contact Info with gradient icons */}
+              <div className="px-3 py-2 space-y-2 border-b border-gray-100 mb-2">
+                <a 
+                  href="tel:918111002100" 
+                  className="flex items-center gap-2 text-sm font-medium transition-all duration-300 hover:translate-x-2 group"
+                  style={{ color: '#1a2a4a' }}
+                >
+                  <FaPhoneAlt className="bg-gradient-to-r from-[#008080] to-[#00b4b4] bg-clip-text text-transparent group-hover:animate-pulse" />
+                  81 1100 2100
+                </a>
+                <a 
+                  href="mailto:gboombappy@gmail.com" 
+                  className="flex items-center gap-2 text-sm font-medium transition-all duration-300 hover:translate-x-2 group"
+                  style={{ color: '#1a2a4a' }}
+                >
+                  <FaEnvelope className="bg-gradient-to-r from-[#008080] to-[#00b4b4] bg-clip-text text-transparent group-hover:rotate-12 transition-transform duration-300" />
+                  gboombappy@gmail.com
+                </a>
               </div>
-            </nav>
-          )}
+
+              {navLinks.map((link, index) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={closeMenu}
+                  className={`block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 transform ${
+                    isMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
+                  }`}
+                  style={{
+                    color: location.pathname === link.path ? '#008080' : '#4b5563',
+                    backgroundColor: location.pathname === link.path ? '#e6f7f7' : 'transparent',
+                    transitionDelay: `${index * 50}ms`
+                  }}
+                  onMouseEnter={(e) => {
+                    if (location.pathname !== link.path) {
+                      e.target.style.backgroundColor = '#f9fafb';
+                      e.target.style.color = '#008080';
+                      e.target.style.transform = 'translateX(8px)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (location.pathname !== link.path) {
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#4b5563';
+                      e.target.style.transform = 'translateX(0)';
+                    }
+                  }}
+                >
+                  {link.name}
+                </Link>
+              ))}
+              <div className="pt-4 px-3 space-y-2">
+                <a
+                  href="https://wa.me/918111002100"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 font-medium text-sm p-3 rounded-lg transition-all duration-300 hover:scale-105 group bg-gradient-to-r from-[#ecfdf5] to-[#d1fae5]"
+                  style={{ 
+                    color: '#059669'
+                  }}
+                >
+                  <FaWhatsapp style={{ color: '#059669' }} className="group-hover:animate-pulse" />
+                  WhatsApp Us
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Custom Animation Styles */}
+      <style>{`
+        @keyframes spin-once {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(180deg); }
+        }
+        @keyframes pulse-once {
+          0% { transform: scale(1); }
+          50% { transform: scale(0.9); }
+          100% { transform: scale(1); }
+        }
+        .animate-spin-once {
+          animation: spin-once 0.3s ease-out;
+        }
+        .animate-pulse-once {
+          animation: pulse-once 0.3s ease-out;
+        }
+        /* Gradient text utility */
+        .bg-clip-text {
+          -webkit-background-clip: text;
+          background-clip: text;
+        }
+      `}</style>
     </header>
   );
 };
