@@ -68,7 +68,7 @@ const Header = () => {
                 <span className="group-hover:translate-x-1 transition-transform duration-300">gboombappy@gmail.com</span>
               </a>
               <a 
-                href="tel:918111002100" 
+                href="tel:+918111002100" 
                 className="flex items-center gap-2 text-white hover:text-teal-200 transition-all duration-300 text-sm group"
               >
                 <FaPhoneAlt size={14} className="group-hover:animate-pulse" />
@@ -208,7 +208,7 @@ const Header = () => {
               {/* Mobile Contact Info with gradient icons */}
               <div className="px-3 py-2 space-y-2 border-b border-gray-100 mb-2">
                 <a 
-                  href="tel:918111002100" 
+                  href="tel:+918111002100" 
                   className="flex items-center gap-2 text-sm font-medium transition-all duration-300 hover:translate-x-2 group"
                   style={{ color: '#1a2a4a' }}
                 >

@@ -278,7 +278,7 @@ const About = () => {
 
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               <a
-                href="tel:918111002100"
+                href="tel:+918111002100"
                 className="inline-flex items-center gap-1.5 text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-105 group"
                 style={{ backgroundColor: colors.teal }}
                 onMouseEnter={(e) => e.target.style.backgroundColor = colors.tealDark}
@@ -367,7 +367,7 @@ const About = () => {
                   <p className="text-white text-sm font-semibold">One Call or WhatsApp is All It Takes!</p>
                   <div className="flex flex-wrap justify-center gap-2 mt-2">
                     <a
-                      href="tel:918111002100"
+                      href="tel:+918111002100"
                       className="inline-flex items-center gap-1.5 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 hover:scale-105 group"
                       style={{ backgroundColor: colors.teal }}
                       onMouseEnter={(e) => e.target.style.backgroundColor = colors.tealDark}
@@ -733,7 +733,7 @@ const About = () => {
               </p>
               <div className="space-y-2">
                 <a
-                  href="tel:918111002100"
+                  href="tel:+918111002100"
                   className="flex items-center justify-center gap-2 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02] group relative overflow-hidden w-full"
                   style={{ backgroundColor: colors.navy }}
                   onMouseEnter={(e) => e.target.style.backgroundColor = colors.teal}

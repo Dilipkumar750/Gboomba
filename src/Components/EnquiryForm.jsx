@@ -72,7 +72,7 @@ const EnquiryForm = () => {
       <div className="mb-4"><div className="text-xs uppercase font-extrabold tracking-widest text-teal-400">NEED AN Emergency / QUOTATION?</div></div>
       <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-5">
         <div className="flex items-center gap-2 text-red-400 font-bold mb-1"><span>🚨</span><span className="text-sm uppercase tracking-wider">EMERGENCY SERVICE</span></div>
-        <p className="text-xs text-gray-300 mb-2">Call Our Team: <a href="tel:918111002100" className="font-extrabold hover:underline text-white">📞 81 1100 2100</a></p>
+        <p className="text-xs text-gray-300 mb-2">Call Our Team: <a href="tel:+918111002100" className="font-extrabold hover:underline text-white">📞 81 1100 2100</a></p>
         <ul className="space-y-1 text-[11px] text-gray-300 font-medium">
           <li className="flex items-center gap-1.5"><span className="text-teal-400">✅</span> Quick site visit after receiving your enquiry.</li>
           <li className="flex items-center gap-1.5"><span className="text-teal-400">✅</span> Immediate support from our expert team.</li>

@@ -370,7 +370,7 @@ _This is an automated enquiry from the website._`;
 
     // Generate WhatsApp message and open WhatsApp
     const whatsappMessage = generateWhatsAppMessage();
-    const phoneNumber = '918111002100';
+    const phoneNumber = '+918111002100';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${whatsappMessage}`;
     
     // Open WhatsApp in new tab
@@ -442,7 +442,7 @@ _This is an automated enquiry from the website._`;
               </div>
               <div className="flex gap-2 flex-wrap">
                 <a 
-                  href="tel:918111002100" 
+                  href="tel:+918111002100" 
                   className="text-white px-4 py-1.5 rounded-lg flex items-center gap-1.5 text-sm transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
                   style={{ 
                     backgroundColor: colors.navy,

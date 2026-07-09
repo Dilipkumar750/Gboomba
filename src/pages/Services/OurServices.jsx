@@ -320,7 +320,7 @@ const OurServices = () => {
 
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               <a
-                href="tel:918111002100"
+                href="tel:+918111002100"
                 className="inline-flex items-center gap-1.5 text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-105 group"
                 style={{ backgroundColor: colors.teal }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.tealDark}
@@ -506,7 +506,7 @@ const OurServices = () => {
                           <span className="absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></span>
                         </Link>
                         <a
-                          href="tel:918111002100"
+                          href="tel:+918111002100"
                           className="inline-flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-gray-100 hover:scale-110"
                           style={{ color: service.borderColor || colors.teal }}
                         >

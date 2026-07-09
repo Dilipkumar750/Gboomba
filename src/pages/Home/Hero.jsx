@@ -175,7 +175,7 @@ const HomePage = () => {
 
     // Encode message for WhatsApp
     const encodedMessage = encodeURIComponent(message);
-    const phoneNumber = '918111002100';
+    const phoneNumber = '+918111002100';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
     // Open WhatsApp
@@ -270,7 +270,7 @@ const HomePage = () => {
   const today = new Date().toISOString().slice(0, 16);
 
   // Phone number
-  const phoneNumber = '918111002100';
+  const phoneNumber = '+918111002100';
   const formattedPhone = '81 1100 2100';
 
   return (

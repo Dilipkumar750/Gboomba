@@ -303,7 +303,7 @@ const WhyChoose = () => {
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <a
-              href="tel:918111002100"
+              href="tel:+918111002100"
               className="inline-flex items-center gap-2 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-105 group"
               style={{ backgroundColor: colors.navy }}
               onMouseEnter={(e) => e.target.style.backgroundColor = colors.teal}

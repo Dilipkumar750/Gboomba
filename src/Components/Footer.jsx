@@ -47,7 +47,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   // Phone number details
-  const phoneNumber = '918111002100';
+  const phoneNumber = '+918111002100';
   const formattedPhone = '81 1100 2100';
   const whatsappNumber = '918111002100';
 

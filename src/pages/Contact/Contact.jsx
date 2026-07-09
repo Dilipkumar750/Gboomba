@@ -302,7 +302,7 @@ ${additionalMsg}
 🌐 www.gboomba.in`;
 
     const encodedMessage = encodeURIComponent(message);
-    const phoneNumber = '918111002100';
+    const phoneNumber = '+918111002100';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
     window.open(whatsappUrl, '_blank');

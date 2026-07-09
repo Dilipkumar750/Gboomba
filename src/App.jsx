@@ -31,7 +31,7 @@ const App = () => {
   };
 
   // Phone number configuration
-  const phoneNumber = '918111002100';
+  const phoneNumber = '+918111002100';
   const formattedPhone = '81 1100 2100';
 
   // Social Links with correct URLs
