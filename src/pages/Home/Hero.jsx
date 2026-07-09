@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import HomeTestimonials from './HomeTestimonials';
 import WhyChoose from './WhyChoose';
-import { 
-  FaWhatsapp, 
-  FaShieldAlt, 
-  FaClock, 
+import {
+  FaWhatsapp,
+  FaShieldAlt,
+  FaClock,
   FaArrowRight,
+  FaInfoCircle,
   FaStar,
   FaTruck,
   FaBoxes,
@@ -114,7 +115,7 @@ const HomePage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
 
     // Get today's date and time for timestamp
@@ -129,15 +130,15 @@ const HomePage = () => {
     });
 
     // Format shifting date
-    const shiftingDateFormatted = formData.shiftingDate 
+    const shiftingDateFormatted = formData.shiftingDate
       ? new Date(formData.shiftingDate).toLocaleString('en-IN', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true
-        })
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      })
       : 'Not specified';
 
     // Get property details based on relocation type
@@ -204,7 +205,7 @@ const HomePage = () => {
   };
 
   // Services data
- const services = [
+  const services = [
     {
       icon: FaTruck,
       title: 'Packers & Movers',
@@ -251,8 +252,8 @@ const HomePage = () => {
     {
       icon: FaTruck, // or you can use FaBus, FaShuttleVan, or any transport icon
       title: 'Transport Services',
-      desc: 'Reliable and affordable transport solutions for goods, luggage, and group travel.',
-      tags: ['Local', 'Outstation', 'Luggage', 'Group Travel'],
+      desc: 'Reliable transport solutions for local and outstation goods delivery with safe and timely service.',
+      tags: ['Local', 'Outstation', 'Open-Body', 'Close-Body'],
       color: '#2c3e50'
     }
   ];
@@ -277,7 +278,7 @@ const HomePage = () => {
       {/* Hero Section with Animations */}
       <div className="relative overflow-hidden" style={{ backgroundColor: colors.lightGray }}>
         {/* Top Border */}
-        <div style={{ 
+        <div style={{
           height: '3px',
           background: `linear-gradient(90deg, ${colors.navy} 0%, ${colors.teal} 50%, ${colors.navy} 100%)`,
           animation: 'gradientPulse 3s ease-in-out infinite'
@@ -288,16 +289,15 @@ const HomePage = () => {
         <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full opacity-5 -ml-32 -mb-32 animate-float-delayed" style={{ backgroundColor: colors.navy }}></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-gray-200/20 rounded-full animate-pulse-slow"></div>
 
-        <div className={`relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12 transition-all duration-1000 transform ${
-          animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-        }`}>
+        <div className={`relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12 transition-all duration-1000 transform ${animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+          }`}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             {/* Left Content */}
             <div className="space-y-5">
               {/* Logo Section */}
               <div>
                 <div className="flex items-center gap-3">
-                  <div 
+                  <div
                     className="w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-500 hover:scale-110 hover:rotate-12"
                   >
                     <img src={logo} alt="GBOOMBA Logo" className="w-10 h-10 object-contain" />
@@ -312,7 +312,7 @@ const HomePage = () => {
               </div>
 
               {/* Trust Badge */}
-              <div 
+              <div
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full animate-pulse-slow"
                 style={{ backgroundColor: colors.tealLight }}
               >
@@ -331,9 +331,9 @@ const HomePage = () => {
               </div>
 
               {/* Emergency Service Box */}
-              <div 
+              <div
                 className="p-4 rounded-lg border-2 relative overflow-hidden transition-all duration-300 hover:shadow-lg"
-                style={{ 
+                style={{
                   backgroundColor: '#fff5f5',
                   borderColor: '#ff4444'
                 }}
@@ -377,24 +377,44 @@ const HomePage = () => {
                   <FaWhatsapp className="group-hover:animate-pulse group-hover:scale-110 transition-transform duration-300" />
                   WhatsApp
                 </a>
+                <a href="/services" className="flex items-center gap-2 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-105 group" style={{ backgroundColor: colors.teal }}>
+                  <FaInfoCircle className="group-hover:animate-pulse group-hover:scale-110 transition-transform duration-300" />
+                  Our Services
+                </a>
               </div>
 
               {/* Quick Info */}
               <div className="border-t border-gray-100 pt-3">
-                <p className="text-[10px] text-gray-500">
-                  📞 +91 {formattedPhone} | ✉️ gboombappy@gmail.com
+                <p className="text-[10px] text-gray-500 flex flex-wrap items-center gap-2">
+                  📞{" "}
+                  <a
+                    href={`tel:+91${formattedPhone.replace(/\s+/g, "")}`}
+                    className="text-blue-500 hover:underline"
+                  >
+                    +91 {formattedPhone}
+                  </a>
+
+                  <span>|</span>
+
+                  ✉️{" "}
+                  <a
+                    href="mailto:gboombappy@gmail.com"
+                    className="text-blue-500 hover:underline"
+                  >
+                    gboombappy@gmail.com
+                  </a>
                 </p>
               </div>
             </div>
 
             {/* Right Content - Enquiry Form */}
             <div className="w-full lg:sticky lg:top-4">
-              <div 
+              <div
                 className="bg-white rounded-2xl p-6 shadow-2xl border transition-all duration-300 hover:shadow-3xl"
                 style={{ borderColor: colors.teal + '22' }}
               >
                 <div className="mb-4">
-                  <h3 className="text-xl font-bold animate-gradient" style={{ color: colors.navy }}>Quotation / Enquiry Form</h3>
+                  <h3 className="text-xl font-bold animate-gradient" style={{ color: colors.navy }}>Need Our Services?</h3>
                   <p className="text-xs text-gray-500">Fill in your details and we'll get back to you shortly</p>
                 </div>
 
@@ -402,7 +422,7 @@ const HomePage = () => {
                   {/* Customer Details */}
                   <div className="space-y-3">
                     <label className="block text-xs font-semibold text-gray-700">Customer Details</label>
-                    
+
                     {/* Name Field */}
                     <div>
                       <label className="block text-xs font-medium text-gray-600 mb-1">
@@ -415,9 +435,8 @@ const HomePage = () => {
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="Enter your full name"
-                        className={`w-full px-3 py-2 border rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:scale-[1.01] ${
-                          errors.name ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-teal/20 focus:border-teal'
-                        }`}
+                        className={`w-full px-3 py-2 border rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:scale-[1.01] ${errors.name ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-teal/20 focus:border-teal'
+                          }`}
                       />
                       {errors.name && <p className="text-red-500 text-[10px] mt-0.5 animate-fade-in-up">{errors.name}</p>}
                     </div>
@@ -435,9 +454,8 @@ const HomePage = () => {
                         onChange={handleChange}
                         placeholder="Enter 10-digit mobile number"
                         maxLength="10"
-                        className={`w-full px-3 py-2 border rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:scale-[1.01] ${
-                          errors.mobile ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-teal/20 focus:border-teal'
-                        }`}
+                        className={`w-full px-3 py-2 border rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:scale-[1.01] ${errors.mobile ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-teal/20 focus:border-teal'
+                          }`}
                       />
                       {errors.mobile && <p className="text-red-500 text-[10px] mt-0.5 animate-fade-in-up">{errors.mobile}</p>}
                     </div>
@@ -454,9 +472,8 @@ const HomePage = () => {
                         onChange={handleChange}
                         placeholder="Enter your complete address"
                         rows="2"
-                        className={`w-full px-3 py-2 border rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:scale-[1.01] ${
-                          errors.address ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-teal/20 focus:border-teal'
-                        }`}
+                        className={`w-full px-3 py-2 border rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:scale-[1.01] ${errors.address ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-teal/20 focus:border-teal'
+                          }`}
                       />
                       {errors.address && <p className="text-red-500 text-[10px] mt-0.5 animate-fade-in-up">{errors.address}</p>}
                     </div>
@@ -473,9 +490,8 @@ const HomePage = () => {
                         value={formData.shiftingDate}
                         onChange={handleChange}
                         min={today}
-                        className={`w-full px-3 py-2 border rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:scale-[1.01] ${
-                          errors.shiftingDate ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-teal/20 focus:border-teal'
-                        }`}
+                        className={`w-full px-3 py-2 border rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:scale-[1.01] ${errors.shiftingDate ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-teal/20 focus:border-teal'
+                          }`}
                       />
                       {errors.shiftingDate && <p className="text-red-500 text-[10px] mt-0.5 animate-fade-in-up">{errors.shiftingDate}</p>}
                     </div>
@@ -493,11 +509,10 @@ const HomePage = () => {
                             setFormData(prev => ({ ...prev, relocationType: type }));
                             setSelectedRelocation(type);
                           }}
-                          className={`px-2 py-1.5 border rounded-lg text-[10px] font-medium transition-all duration-300 hover:scale-105 ${
-                            selectedRelocation === type 
-                              ? 'border-teal-500 bg-teal-50 text-teal-700 shadow-md' 
+                          className={`px-2 py-1.5 border rounded-lg text-[10px] font-medium transition-all duration-300 hover:scale-105 ${selectedRelocation === type
+                              ? 'border-teal-500 bg-teal-50 text-teal-700 shadow-md'
                               : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
-                          }`}
+                            }`}
                           style={{
                             borderColor: selectedRelocation === type ? colors.teal : undefined,
                             backgroundColor: selectedRelocation === type ? colors.tealLight : undefined,
@@ -657,22 +672,22 @@ const HomePage = () => {
             {services.map((service, index) => {
               const Icon = service.icon;
               return (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className={`bg-white rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group animate-fade-in-up relative overflow-hidden`}
-                  style={{ 
+                  style={{
                     borderTop: `3px solid ${service.color}`,
                     animationDelay: `${index * 100 + 400}ms`
                   }}
                 >
-                  <div 
+                  <div
                     className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500"
                     style={{ background: `linear-gradient(135deg, ${service.color}22, transparent)` }}
                   ></div>
-                  
+
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-2">
-                      <div 
+                      <div
                         className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12"
                         style={{ backgroundColor: service.color + '22' }}
                       >

@@ -18,7 +18,14 @@ import {
   FaGem,
   FaPhoneAlt,
   FaWhatsapp,
-  FaArrowRight
+  FaArrowRight,
+  FaCalendarCheck,
+  FaTruck,
+  FaTimesCircle,
+  FaUserSlash,
+  FaBan,
+  FaUsersSlash,
+  FaHourglass
 } from 'react-icons/fa';
 import logo from "../../assets/logo.png";
 
@@ -37,54 +44,96 @@ const WhyChoose = () => {
     tealLight: '#e6f7f7',
     gold: '#FFD700',
     white: '#ffffff',
-    lightGray: '#f8f9fa'
+    lightGray: '#f8f9fa',
+    red: '#e74c3c',
+    orange: '#f39c12',
+    green: '#10b981'
   };
 
-  // Why Choose Us data
+  // Why Choose Us data - Updated with all 7 options
   const whyChooseData = [
     { 
-      icon: FaClock, 
-      title: '4+ Years Experience', 
-      desc: 'Industry expertise since 2019 with continuous learning and improvement' 
-    },
-    { 
-      icon: FaAward, 
-      title: 'Quality Service', 
-      desc: 'High-quality service standards with attention to every detail' 
-    },
-    { 
-      icon: FaUsers, 
-      title: 'Skilled Team', 
-      desc: 'Professional & experienced team dedicated to customer satisfaction' 
-    },
-    { 
-      icon: FaThumbsUp, 
-      title: '100% Satisfaction', 
-      desc: 'Customer satisfaction focused approach with guaranteed results' 
-    },
-    { 
-      icon: FaHeadset, 
-      title: '24/7 Support', 
-      desc: 'Round the clock customer support for all your service needs' 
-    },
-    { 
       icon: FaShieldAlt, 
-      title: 'Trusted Service', 
-      desc: 'Reliable & trustworthy service with 500+ happy customers' 
+      title: 'Scratch-Free Care', 
+      desc: 'Protect your walls & furniture with our careful handling and premium moving techniques' 
+    },
+    { 
+      icon: FaRegSmile, 
+      title: 'Neighbor-Friendly Service', 
+      desc: 'Quiet, clean, and respectful service that keeps your neighbors happy' 
+    },
+    { 
+      icon: FaBoxes, 
+      title: 'Safe Handling of Every Item', 
+      desc: 'Expert care for belongings of all sizes – from delicate to oversized' 
+    },
+    { 
+      icon: FaTruck, 
+      title: 'Professional Packing & Loading', 
+      desc: 'Industry-standard packing, loading, and unloading with precision and care' 
+    },
+    { 
+      icon: FaCalendarCheck, 
+      title: 'Hassle-Free Relocation', 
+      desc: 'Stress-free moving experience with our dedicated and reliable team' 
+    },
+    { 
+      icon: FaClock, 
+      title: 'On-Time & Reliable Service', 
+      desc: 'Punctual delivery and dependable service you can count on every time' 
+    },
+    { 
+      icon: FaHeart, 
+      title: 'Happy Moving Memories', 
+      desc: 'Make moving a happy memory for your family with our caring and supportive team' 
     }
   ];
 
-  // Promises data
+  // Promises data - Updated with new content
   const promises = [
-    { icon: FaRegSmile, text: 'No Spoiled Weekends' },
-    { icon: FaShieldAlt, text: 'Scratch-Free Walls & Furniture' },
-    { icon: FaClock, text: 'Quiet & Neighbor-Friendly Service' },
-    { icon: FaStar, text: 'Surprise Your Loved Ones' },
-    { icon: FaBoxes, text: 'Special Care for Every Item' },
-    { icon: FaCheckCircle, text: 'Hassle-Free Relocation' }
+    { 
+      icon: FaTimesCircle, 
+      text: 'The same problem every time? Not anymore.',
+      color: colors.red,
+      type: 'problem'
+    },
+    { 
+      icon: FaCalendarCheck, 
+      text: 'Don\'t spoil your weekends.',
+      color: colors.orange,
+      type: 'solution'
+    },
+    { 
+      icon: FaUserSlash, 
+      text: 'Don\'t trouble your loved ones.',
+      color: colors.orange,
+      type: 'solution'
+    },
+    { 
+      icon: FaBan, 
+      text: 'DON\'T LET MOVING RUIN YOUR WEEKEND.',
+      color: colors.red,
+      type: 'warning'
+    },
+    { 
+      icon: FaUsersSlash, 
+      text: 'Don\'t burden your friends or relatives with the stress of shifting.',
+      color: colors.orange,
+      type: 'solution'
+    },
+    { 
+      icon: FaBoxes, 
+      text: 'Leave the packing, lifting, loading, transportation, and setup to our trained professionals.',
+      color: colors.teal,
+      type: 'action'
+    },
+    { 
+      icon: FaRegSmile, 
+      text: 'Sit back. Relax. We\'ll handle the hard work.',
+      color: colors.teal,
+      type: 'relax'
+    }
   ];
-
-
 
   return (
     <section className="py-12" style={{ backgroundColor: colors.tealLight }}>
@@ -104,11 +153,11 @@ const WhyChoose = () => {
             Why Choose <span style={{ color: colors.teal }}>GBOOMBA</span>?
           </h2>
           <p className="text-gray-600 text-sm mt-1 max-w-2xl mx-auto">
-            Your happiness is our pride - We deliver reliable and stress-free home services with care and professionalism
+            Making your move a happy memory with our trusted services
           </p>
         </div>
 
-        {/* Why Choose Grid with Staggered Animations */}
+        {/* Why Choose Grid with Staggered Animations - 7 items */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
           {whyChooseData.map((item, index) => {
             const Icon = item.icon;
@@ -173,7 +222,7 @@ const WhyChoose = () => {
           </div>
         </div>
 
-        {/* Our Promises with Animations */}
+        {/* Our Promises with New Design */}
         <div className={`bg-white rounded-xl p-6 shadow-lg transition-all duration-1000 transform ${
           animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
         }`} style={{ animationDelay: '500ms' }}>
@@ -181,22 +230,64 @@ const WhyChoose = () => {
             Our <span style={{ color: colors.teal }}>Promises</span>
           </h3>
           <p className="text-center text-gray-600 text-sm mb-5">
-            Sit back and relax while we take care of the hard work
+           We treat your home like our own and your belongings like our responsibility.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {promises.map((item, index) => {
               const Icon = item.icon;
+              // Determine background color based on type
+              let bgColor = colors.tealLight;
+              let textColor = 'text-gray-700';
+              let borderColor = 'transparent';
+              let iconBgColor = colors.tealLight;
+              
+              if (item.type === 'problem') {
+                bgColor = '#fee2e2';
+                textColor = 'text-red-700';
+                borderColor = colors.red;
+                iconBgColor = '#fecaca';
+              } else if (item.type === 'warning') {
+                bgColor = '#fef3c7';
+                textColor = 'text-red-700';
+                borderColor = colors.red;
+                iconBgColor = '#fde68a';
+              } else if (item.type === 'solution') {
+                bgColor = '#fef9e7';
+                textColor = 'text-orange-700';
+                borderColor = colors.orange;
+                iconBgColor = '#fdebd0';
+              } else if (item.type === 'action') {
+                bgColor = colors.tealLight;
+                textColor = 'text-teal-700';
+                borderColor = colors.teal;
+                iconBgColor = '#b2dfdb';
+              } else if (item.type === 'relax') {
+                bgColor = '#d1fae5';
+                textColor = 'text-green-700';
+                borderColor = colors.green;
+                iconBgColor = '#a7f3d0';
+              }
+              
               return (
                 <div 
                   key={index} 
-                  className={`flex items-center gap-2.5 p-2.5 rounded-lg transition-all duration-300 hover:shadow-md hover:translate-x-1 animate-fade-in-up`}
+                  className={`flex items-start gap-3 p-3 rounded-lg transition-all duration-300 hover:shadow-md hover:translate-x-1 animate-fade-in-up`}
                   style={{ 
-                    backgroundColor: colors.tealLight,
-                    animationDelay: `${index * 100 + 600}ms`
+                    backgroundColor: bgColor,
+                    animationDelay: `${index * 100 + 600}ms`,
+                    borderLeft: `4px solid ${borderColor}`
                   }}
                 >
-                  <Icon style={{ color: colors.teal }} size={14} className="flex-shrink-0 animate-bounce-slow" />
-                  <span className="text-xs text-gray-700">{item.text}</span>
+                  <div 
+                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 transition-all duration-300 hover:scale-110"
+                    style={{ backgroundColor: iconBgColor }}
+                  >
+                    <Icon style={{ color: item.color || colors.teal }} size={14} className="animate-bounce-slow" />
+                  </div>
+                  <div>
+                    <span className={`text-xs ${textColor} font-medium leading-relaxed`}>{item.text}</span>
+                  </div>
                 </div>
               );
             })}

@@ -30,12 +30,16 @@ const App = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Replace with your actual URLs
+  // Phone number configuration
+  const phoneNumber = '918111002100';
+  const formattedPhone = '81 1100 2100';
+
+  // Social Links with correct URLs
   const socialLinks = {
-    whatsapp: 'https://wa.me/918111002100?text=Hello%20I%20would%20like%20to%20know%20more%20about%20your%20services',
-    instagram: 'https://www.instagram.com/gboomba_homesolutions?igsh=MXA0djJjcnE3aDQyag==',
+    whatsapp: `https://wa.me/${phoneNumber}?text=Hello%20I%20would%20like%20to%20know%20more%20about%20your%20services`,
+    instagram: 'https://www.instagram.com/gboomba_homesolutions',
     google: 'https://g.page/gboomba.in',
-    phone: 'tel:918111002100'
+    phone: `tel:${phoneNumber}`
   };
 
   return (
@@ -110,6 +114,10 @@ const App = () => {
             className="group relative flex items-center justify-center w-12 h-12 rounded-full bg-teal-600 text-white shadow-lg hover:bg-teal-700 transition-all duration-300 hover:scale-110 hover:shadow-2xl animate-bounce-slow"
             style={{ animationDelay: '1.5s' }}
             aria-label="Call us"
+            onClick={(e) => {
+              // Optional: Add analytics tracking here
+              console.log('Call initiated to:', formattedPhone);
+            }}
           >
             <FaPhoneAlt className="text-xl" />
             <span className="absolute right-full mr-3 px-3 py-1.5 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
@@ -118,14 +126,32 @@ const App = () => {
           </a>
         </div>
 
+        {/* Scroll to Top Button */}
+        {showScrollTop && (
+          <button
+            onClick={scrollToTop}
+            className="fixed bottom-6 left-6 z-50 p-3 rounded-full bg-teal-600 text-white shadow-lg hover:bg-teal-700 transition-all duration-300 hover:scale-110 hover:shadow-2xl animate-fade-in"
+            aria-label="Scroll to top"
+          >
+            <FaArrowUp className="text-xl" />
+          </button>
+        )}
+
         {/* CSS Animations */}
         <style>{`
           @keyframes bounce-slow {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-8px); }
           }
+          @keyframes fade-in {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+          }
           .animate-bounce-slow {
             animation: bounce-slow 2s ease-in-out infinite;
+          }
+          .animate-fade-in {
+            animation: fade-in 0.3s ease-out;
           }
         `}</style>
       </div>

@@ -12,9 +12,9 @@ import {
   FaUserCheck,
   FaMedal,
   FaThumbsUp,
-  FaRegSmile
+  FaRegSmile,
+  FaHammer
 } from 'react-icons/fa';
-
 const HomeTestimonials = () => {
   const [animateIn, setAnimateIn] = useState(false);
 
@@ -96,7 +96,7 @@ const HomeTestimonials = () => {
   const trustIndicators = [
     { icon: FaStar, number: '4.9/5', label: 'Average Rating', sub: '5 Stars Rating', color: '#FFD700' },
     { icon: FaMedal, number: '500+', label: 'Happy Customers', sub: 'And counting...', color: colors.teal },
-    { icon: FaTruck, number: '100%', label: 'On-Time Delivery', sub: 'Guaranteed service', color: colors.teal },
+    { icon: FaHammer, number: '100%', label: 'On-Time Service', sub: 'Guaranteed service', color: colors.teal },
     { icon: FaHeart, number: '100%', label: 'Satisfaction Rate', sub: 'Money-back guarantee', color: colors.teal }
   ];
 

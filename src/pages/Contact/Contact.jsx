@@ -30,7 +30,10 @@ import {
   FaTimes,
   FaUser,
   FaCalendarAlt,
-  FaHome as FaHomeIcon
+  FaHome as FaHomeIcon,
+  FaBuilding as FaBuildingIcon,
+  FaChevronDown,
+  FaChevronUp
 } from 'react-icons/fa';
 import { MdCleaningServices, MdElectricalServices, MdAcUnit } from 'react-icons/md';
 
@@ -65,7 +68,7 @@ const Contact = () => {
       icon: '🚚'
     },
     'Transport Services': {
-      subcategories: ['Mini Door Vehicle', 'Pickup Vehicle', 'Eicher Vehicle', 'Other Long-Chassis Vehicle', 'Local Transport', 'Long-Distance Transport'],
+      subcategories: ['Mini Door Vehicle - TATA Ace', 'Pickup Vehicle - 2 Ton', 'Eicher Vehicle', 'Other Long-Chassis Vehicle', 'Local Transport', 'Long-Distance Transport'],
       icon: '🚐'
     },
     'AC Installation & Services': {
@@ -89,20 +92,31 @@ const Contact = () => {
     officeArea: '',
     shopType: '',
     shopArea: '',
-    categories: [], // Changed from category to categories (array)
-    subcategories: []
+    categories: [],
+    subcategories: [],
+    floorNumber: '',
+    liftAvailable: '',
+    additionalMessage: ''
   });
   const [errors, setErrors] = useState({});
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [selectedRelocation, setSelectedRelocation] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState([]); // Array for multiple categories
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
   const [animateIn, setAnimateIn] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPackersFields, setShowPackersFields] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState({});
 
   useEffect(() => {
     setAnimateIn(true);
   }, []);
+
+  // Check if Packers & Movers is selected
+  useEffect(() => {
+    const isPackersSelected = selectedCategories.includes('Packers & Movers');
+    setShowPackersFields(isPackersSelected);
+  }, [selectedCategories]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -112,29 +126,43 @@ const Contact = () => {
     }
   };
 
-  // Handle category toggle (checkbox)
+  const toggleCategory = (category) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }));
+  };
+
   const handleCategoryToggle = (category) => {
     setSelectedCategories(prev => {
       const isSelected = prev.includes(category);
       let newCategories;
       if (isSelected) {
         newCategories = prev.filter(item => item !== category);
-        // Remove subcategories from the deselected category
+        // Remove subcategories of this category
         const categorySubcategories = serviceCategories[category]?.subcategories || [];
         setSelectedSubcategories(prevSubs => 
           prevSubs.filter(sub => !categorySubcategories.includes(sub))
         );
+        // Collapse the category when unselecting
+        setExpandedCategories(prev => ({
+          ...prev,
+          [category]: false
+        }));
       } else {
         newCategories = [...prev, category];
+        // Auto-expand the category when selecting
+        setExpandedCategories(prev => ({
+          ...prev,
+          [category]: true
+        }));
       }
       
-      // Update formData
       setFormData(prev => ({
         ...prev,
         categories: newCategories
       }));
       
-      // Clear error for categories
       if (errors.categories) {
         setErrors(prev => ({ ...prev, categories: '' }));
       }
@@ -173,6 +201,13 @@ const Contact = () => {
     if (!formData.relocationType) newErrors.relocationType = 'Please select relocation type';
     if (selectedCategories.length === 0) newErrors.categories = 'Please select at least one service category';
     if (selectedSubcategories.length === 0) newErrors.subcategories = 'Please select at least one service';
+    
+    // Validate Packers & Movers extra fields
+    if (showPackersFields) {
+      if (!formData.floorNumber) newErrors.floorNumber = 'Please enter floor number';
+      if (!formData.liftAvailable) newErrors.liftAvailable = 'Please select lift availability';
+    }
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -183,7 +218,6 @@ const Contact = () => {
     
     setIsSubmitting(true);
 
-    // Get today's date and time for timestamp
     const now = new Date();
     const timestamp = now.toLocaleString('en-IN', {
       day: '2-digit',
@@ -194,7 +228,6 @@ const Contact = () => {
       hour12: true
     });
 
-    // Format shifting date
     const shiftingDateFormatted = formData.shiftingDate 
       ? new Date(formData.shiftingDate).toLocaleString('en-IN', {
           day: '2-digit',
@@ -206,7 +239,6 @@ const Contact = () => {
         })
       : 'Not specified';
 
-    // Get property details based on relocation type
     let propertyDetails = '';
     if (formData.relocationType === 'Old House to New House') {
       propertyDetails = `BHK: ${formData.homeBHK || 'Not specified'}`;
@@ -216,17 +248,31 @@ const Contact = () => {
       propertyDetails = `Shop Type: ${formData.shopType || 'Not specified'}, Area: ${formData.shopArea || 'Not specified'} sq.ft`;
     }
 
-    // Get selected services list
+    let packersDetails = '';
+    if (showPackersFields) {
+      packersDetails = `
+━━━━━━━━━━━━━━━━━━━━━━
+📦 *Packers & Movers Details:*
+• Floor Number: ${formData.floorNumber || 'Not specified'}
+• Lift Available: ${formData.liftAvailable || 'Not specified'}`;
+    }
+
+    let additionalMsg = '';
+    if (formData.additionalMessage) {
+      additionalMsg = `
+━━━━━━━━━━━━━━━━━━━━━━
+📝 *Additional Message:*
+${formData.additionalMessage}`;
+    }
+
     const selectedServicesList = selectedSubcategories.length > 0 
       ? selectedSubcategories.map((s, i) => `  ${i + 1}. ${s}`).join('\n')
       : 'Not specified';
 
-    // Get selected categories list
     const selectedCategoriesList = selectedCategories.length > 0
       ? selectedCategories.map((c, i) => `  ${i + 1}. ${c}`).join('\n')
       : 'Not specified';
 
-    // Create WhatsApp message
     const message = `📋 *NEW ENQUIRY - GBOOMBA HOME SERVICES*
 ━━━━━━━━━━━━━━━━━━━━━━
 
@@ -235,6 +281,8 @@ const Contact = () => {
 ${selectedCategoriesList}
 • Selected Services:
 ${selectedServicesList}
+${packersDetails}
+${additionalMsg}
 
 👤 *Customer Details:*
 • Name: ${formData.name}
@@ -253,19 +301,15 @@ ${selectedServicesList}
 📞 Contact: 81 1100 2100
 🌐 www.gboomba.in`;
 
-    // Encode message for WhatsApp
     const encodedMessage = encodeURIComponent(message);
     const phoneNumber = '918111002100';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
-    // Open WhatsApp
     window.open(whatsappUrl, '_blank');
 
-    // Show success message
     setFormSubmitted(true);
     setIsSubmitting(false);
 
-    // Reset form after 5 seconds
     setTimeout(() => {
       setFormSubmitted(false);
       setFormData({
@@ -279,15 +323,19 @@ ${selectedServicesList}
         shopType: '',
         shopArea: '',
         categories: [],
-        subcategories: []
+        subcategories: [],
+        floorNumber: '',
+        liftAvailable: '',
+        additionalMessage: ''
       });
       setSelectedRelocation('');
       setSelectedCategories([]);
       setSelectedSubcategories([]);
+      setShowPackersFields(false);
+      setExpandedCategories({});
     }, 5000);
   };
 
-  // Services Quick Links
   const quickServices = [
     { icon: FaTruck, name: 'Packers & Movers' },
     { icon: MdCleaningServices, name: 'Cleaning Services' },
@@ -298,7 +346,6 @@ ${selectedServicesList}
     { icon: FaTruck, name: 'Transport Services' }
   ];
 
-  // Get all subcategories from selected categories
   const getSubcategoriesForSelectedCategories = () => {
     const allSubs = [];
     selectedCategories.forEach(category => {
@@ -309,16 +356,13 @@ ${selectedServicesList}
   };
 
   const currentSubcategories = getSubcategoriesForSelectedCategories();
-
-  // Phone number for calls
   const phoneNumber = '918111002100';
   const formattedPhone = '81 1100 2100';
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: colors.lightGray }}>
-      {/* Hero Section - Minimized Height with Animation */}
+      {/* Hero Section */}
       <div className="relative overflow-hidden" style={{ backgroundColor: colors.navy }}>
-        {/* Top Border with pulse animation */}
         <div style={{ 
           height: '3px',
           background: `linear-gradient(90deg, ${colors.navy} 0%, ${colors.teal} 50%, ${colors.navy} 100%)`,
@@ -335,7 +379,6 @@ ${selectedServicesList}
           animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
         }`}>
           <div className="text-center max-w-3xl mx-auto">
-            {/* Logo with bounce animation */}
             <div className="flex items-center justify-center gap-3 mb-2 animate-bounce-slow">
               <div 
                 className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500 hover:scale-110 hover:rotate-12"
@@ -354,7 +397,6 @@ ${selectedServicesList}
               </div>
             </div>
 
-            {/* Packers & Movers Badge with pulse */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-2 animate-pulse-slow" style={{ backgroundColor: colors.teal + '33' }}>
               <FaTruck className="text-white animate-bounce-slow" size={12} />
               <span className="text-[10px] font-medium text-white tracking-wider">PACKERS & MOVERS</span>
@@ -405,7 +447,6 @@ ${selectedServicesList}
               <div className={`bg-white rounded-2xl p-6 shadow-lg transition-all duration-1000 transform ${
                 animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
               }`} style={{ border: `1px solid ${colors.teal}22` }}>
-                {/* Emergency Service Box with pulse animation */}
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-lg animate-bounce-slow">🚨</span>
@@ -430,7 +471,6 @@ ${selectedServicesList}
 
                 <div className="border-t border-gray-100 my-4"></div>
 
-                {/* Form Header */}
                 <div className="mb-4">
                   <h3 className="text-lg font-bold animate-gradient" style={{ color: colors.navy }}>
                     📋 QUOTATION / ENQUIRY FORM
@@ -439,101 +479,170 @@ ${selectedServicesList}
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Service Categories - Multiple Selection with Checkboxes */}
+                  {/* Service Categories - Accordion Design */}
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-2">
                       Which Service Are You Looking For? <span className="text-red-500">*</span>
                       <span className="block text-[10px] font-normal text-gray-400 mt-0.5">(Select one or more services)</span>
                     </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
-                      {Object.keys(serviceCategories).map((category) => (
-                        <label
-                          key={category}
-                          className={`flex items-center p-2 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                            selectedCategories.includes(category)
-                              ? 'border-teal bg-teal-light shadow-md'
-                              : 'border-gray-200 hover:border-teal hover:bg-gray-50'
-                          }`}
-                          onClick={() => handleCategoryToggle(category)}
-                          style={{
-                            borderColor: selectedCategories.includes(category) ? colors.teal : undefined,
-                            backgroundColor: selectedCategories.includes(category) ? colors.tealLight : undefined
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectedCategories.includes(category)}
-                            onChange={() => handleCategoryToggle(category)}
-                            className="mr-2 w-4 h-4 accent-teal flex-shrink-0"
-                          />
-                          <span className="text-xs">
-                            {serviceCategories[category].icon} {category}
-                          </span>
-                        </label>
-                      ))}
+                    
+                    {/* Selected Categories Count */}
+                    {selectedCategories.length > 0 && (
+                      <div className="mb-2 p-2 rounded-lg" style={{ backgroundColor: colors.tealLight }}>
+                        <p className="text-[10px] font-medium" style={{ color: colors.teal }}>
+                          Selected: {selectedCategories.length} category(s)
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Accordion Categories */}
+                    <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
+                      {Object.keys(serviceCategories).map((category) => {
+                        const isSelected = selectedCategories.includes(category);
+                        const isExpanded = expandedCategories[category] || false;
+                        const categoryData = serviceCategories[category];
+                        const subcategories = categoryData.subcategories || [];
+                        const selectedSubsForCategory = subcategories.filter(sub => selectedSubcategories.includes(sub));
+
+                        return (
+                          <div 
+                            key={category}
+                            className={`border-2 rounded-lg transition-all duration-300 overflow-hidden ${
+                              isSelected ? 'border-teal shadow-md' : 'border-gray-200'
+                            }`}
+                            style={{
+                              borderColor: isSelected ? colors.teal : undefined,
+                              backgroundColor: isSelected ? colors.tealLight : 'white'
+                            }}
+                          >
+                            {/* Category Header */}
+                            <div 
+                              className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+                              onClick={() => toggleCategory(category)}
+                              style={{
+                                backgroundColor: isSelected ? colors.tealLight : 'white'
+                              }}
+                            >
+                              <div 
+                                className="flex items-center gap-3 flex-1"
+                                onClick={(e) => {
+                                  // Only toggle category if clicking on the text/icon area, not the checkbox
+                                  if (e.target.type !== 'checkbox') {
+                                    handleCategoryToggle(category);
+                                  }
+                                }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={isSelected}
+                                  onChange={(e) => {
+                                    e.stopPropagation();
+                                    handleCategoryToggle(category);
+                                  }}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="w-4 h-4 accent-teal flex-shrink-0"
+                                />
+                                <span className="text-sm font-medium">
+                                  {categoryData.icon} {category}
+                                </span>
+                                {isSelected && selectedSubsForCategory.length > 0 && (
+                                  <span className="text-[10px] bg-teal text-white px-2 py-0.5 rounded-full">
+                                    {selectedSubsForCategory.length}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {isSelected && (
+                                  <span className="text-[10px] text-teal font-medium">✓ Selected</span>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleCategory(category);
+                                  }}
+                                  className="p-1 hover:bg-gray-200 rounded-full transition-colors duration-200"
+                                >
+                                  {isExpanded ? (
+                                    <FaChevronUp size={14} className="text-gray-500" />
+                                  ) : (
+                                    <FaChevronDown size={14} className="text-gray-500" />
+                                  )}
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Subcategories - Accordion Content */}
+                            <div 
+                              className={`transition-all duration-300 overflow-hidden ${
+                                isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                              }`}
+                            >
+                              <div className="p-3 pt-0 border-t border-gray-200" style={{ backgroundColor: 'rgba(255,255,255,0.7)' }}>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 mt-2">
+                                  {subcategories.map((subcategory) => (
+                                    <label
+                                      key={subcategory}
+                                      className={`flex items-center p-1.5 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                                        selectedSubcategories.includes(subcategory)
+                                          ? 'border-teal bg-white shadow-md'
+                                          : 'border-gray-300 hover:border-teal hover:bg-gray-50'
+                                      } ${
+                                        !isSelected ? 'opacity-50 cursor-not-allowed' : ''
+                                      }`}
+                                      onClick={(e) => {
+                                        if (isSelected) {
+                                          handleSubcategoryToggle(subcategory);
+                                        }
+                                      }}
+                                      style={{
+                                        borderColor: selectedSubcategories.includes(subcategory) ? colors.teal : undefined,
+                                        backgroundColor: selectedSubcategories.includes(subcategory) ? 'white' : undefined,
+                                        cursor: isSelected ? 'pointer' : 'not-allowed'
+                                      }}
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        checked={selectedSubcategories.includes(subcategory)}
+                                        onChange={() => {
+                                          if (isSelected) {
+                                            handleSubcategoryToggle(subcategory);
+                                          }
+                                        }}
+                                        disabled={!isSelected}
+                                        className="mr-2 w-4 h-4 accent-teal flex-shrink-0"
+                                      />
+                                      <span className="text-xs">{subcategory}</span>
+                                    </label>
+                                  ))}
+                                </div>
+                                {!isSelected && (
+                                  <p className="text-[10px] text-gray-400 mt-2 italic">
+                                    Please select this category to choose services
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                     {errors.categories && (
                       <p className="text-red-500 text-[10px] mt-1 animate-fade-in-up">{errors.categories}</p>
                     )}
-                    {selectedCategories.length > 0 && (
-                      <p className="text-[10px] mt-1" style={{ color: colors.teal }}>
-                        Selected: {selectedCategories.length} category(s)
-                      </p>
-                    )}
                   </div>
-
-                  {/* Subcategories - Dynamic based on selected categories */}
-                  {selectedCategories.length > 0 && currentSubcategories.length > 0 && (
-                    <div className="p-3 rounded-lg" style={{ backgroundColor: colors.tealLight }}>
-                      <label className="block text-xs font-medium text-gray-700 mb-1.5">
-                        Select Services under Selected Categories <span className="text-red-500">*</span>
-                      </label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-36 overflow-y-auto">
-                        {currentSubcategories.map((subcategory) => (
-                          <label
-                            key={subcategory}
-                            className={`flex items-center p-1.5 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                              selectedSubcategories.includes(subcategory)
-                                ? 'border-teal bg-white shadow-md'
-                                : 'border-gray-300 bg-white/70 hover:border-teal'
-                            }`}
-                            onClick={() => handleSubcategoryToggle(subcategory)}
-                            style={{
-                              borderColor: selectedSubcategories.includes(subcategory) ? colors.teal : undefined
-                            }}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={selectedSubcategories.includes(subcategory)}
-                              onChange={() => handleSubcategoryToggle(subcategory)}
-                              className="mr-2 w-4 h-4 accent-teal flex-shrink-0"
-                            />
-                            <span className="text-xs">{subcategory}</span>
-                          </label>
-                        ))}
-                      </div>
-                      {errors.subcategories && (
-                        <p className="text-red-500 text-[10px] mt-1 animate-fade-in-up">{errors.subcategories}</p>
-                      )}
-                      {selectedSubcategories.length > 0 && (
-                        <p className="text-[10px] mt-1" style={{ color: colors.teal }}>
-                          Selected: {selectedSubcategories.length} service(s)
-                        </p>
-                      )}
-                    </div>
-                  )}
 
                   {/* Selected Services Summary */}
                   {selectedSubcategories.length > 0 && (
-                    <div className="p-2 rounded-lg" style={{ backgroundColor: colors.tealLight }}>
-                      <p className="text-[10px] font-medium" style={{ color: colors.teal }}>
-                        Selected Services:
+                    <div className="p-3 rounded-lg" style={{ backgroundColor: colors.tealLight }}>
+                      <p className="text-xs font-medium mb-2" style={{ color: colors.teal }}>
+                        📌 Selected Services:
                       </p>
-                      <div className="flex flex-wrap gap-1 mt-0.5">
+                      <div className="flex flex-wrap gap-1.5">
                         {selectedSubcategories.map((service, index) => (
                           <span
                             key={index}
-                            className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-white rounded-full text-[10px]"
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-white rounded-full text-[10px] shadow-sm"
                             style={{ color: colors.navy }}
                           >
                             {service}
@@ -542,10 +651,94 @@ ${selectedServicesList}
                               onClick={() => handleSubcategoryToggle(service)}
                               className="text-gray-400 hover:text-red-500 transition-colors"
                             >
-                              <FaTimes size={8} />
+                              <FaTimes size={10} />
                             </button>
                           </span>
                         ))}
+                      </div>
+                      {errors.subcategories && (
+                        <p className="text-red-500 text-[10px] mt-1 animate-fade-in-up">{errors.subcategories}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Packers & Movers Extra Fields */}
+                  {showPackersFields && (
+                    <div className="p-3 rounded-lg border-2 border-orange-200 animate-fade-in-up" style={{ backgroundColor: '#fff7ed' }}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <FaTruck className="text-orange-600" size={16} />
+                        <h4 className="text-sm font-bold text-orange-800">Packers & Movers Details</h4>
+                        <span className="text-[10px] bg-orange-200 text-orange-700 px-2 py-0.5 rounded-full">Required</span>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {/* Floor Number */}
+                        <div>
+                          <label className="block text-[10px] font-medium text-gray-600 mb-1">
+                            <FaBuildingIcon className="inline mr-1" style={{ color: colors.teal }} size={10} />
+                            Which Floor? <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            name="floorNumber"
+                            value={formData.floorNumber}
+                            onChange={handleChange}
+                            placeholder="e.g. Ground, 1st, 2nd, etc."
+                            className={`w-full px-3 py-2 border rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:scale-[1.01] ${
+                              errors.floorNumber 
+                                ? 'border-red-500 focus:ring-red-200 animate-shake' 
+                                : 'border-gray-300 focus:ring-teal/20 focus:border-teal'
+                            }`}
+                            style={{
+                              borderColor: errors.floorNumber ? undefined : colors.teal + '40',
+                            }}
+                          />
+                          {errors.floorNumber && (
+                            <p className="text-red-500 text-[10px] mt-0.5 animate-fade-in-up">{errors.floorNumber}</p>
+                          )}
+                        </div>
+
+                        {/* Lift Available */}
+                        <div>
+                          <label className="block text-[10px] font-medium text-gray-600 mb-1">
+                            <FaBuildingIcon className="inline mr-1" style={{ color: colors.teal }} size={10} />
+                            Lift Available? <span className="text-red-500">*</span>
+                          </label>
+                          <div className="flex gap-2">
+                            {['Yes', 'No'].map((option) => (
+                              <button
+                                key={option}
+                                type="button"
+                                onClick={() => {
+                                  setFormData(prev => ({ ...prev, liftAvailable: option }));
+                                  if (errors.liftAvailable) {
+                                    setErrors(prev => ({ ...prev, liftAvailable: '' }));
+                                  }
+                                }}
+                                className={`flex-1 px-3 py-2 border-2 rounded-lg text-xs font-medium transition-all duration-300 hover:scale-105 ${
+                                  formData.liftAvailable === option
+                                    ? 'border-teal-500 bg-teal-50 text-teal-700 shadow-md'
+                                    : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+                                }`}
+                                style={{
+                                  borderColor: formData.liftAvailable === option ? colors.teal : undefined,
+                                  backgroundColor: formData.liftAvailable === option ? colors.tealLight : undefined,
+                                  color: formData.liftAvailable === option ? colors.teal : undefined
+                                }}
+                              >
+                                {option === 'Yes' ? '✅ Yes' : '❌ No'}
+                              </button>
+                            ))}
+                          </div>
+                          {errors.liftAvailable && (
+                            <p className="text-red-500 text-[10px] mt-0.5 animate-fade-in-up">{errors.liftAvailable}</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="mt-3 text-[10px] text-gray-500 flex items-center gap-1">
+                        <FaBuilding className="text-blue-500" size={12} />
+                        <span>This information helps us assign the right moving team and equipment</span>
                       </div>
                     </div>
                   )}
@@ -746,6 +939,24 @@ ${selectedServicesList}
                     </div>
                   </div>
 
+                  {/* Additional Message Box */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-2">
+                      <FaRegSmile className="inline mr-1" style={{ color: colors.teal }} size={12} />
+                      Additional Message
+                      <span className="block text-[10px] font-normal text-gray-400 mt-0.5">Any special requirements or instructions</span>
+                    </label>
+                    <textarea
+                      name="additionalMessage"
+                      value={formData.additionalMessage}
+                      onChange={handleChange}
+                      placeholder="e.g. Fragile items, specific timing, parking instructions, etc."
+                      rows="3"
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-teal/20 focus:border-teal hover:border-teal/50 focus:scale-[1.01] resize-none"
+                      style={{ borderColor: colors.teal + '40' }}
+                    />
+                  </div>
+
                   <button
                     type="submit"
                     disabled={isSubmitting}
@@ -787,7 +998,6 @@ ${selectedServicesList}
                   )}
                 </form>
 
-                {/* Contact Info at bottom of form */}
                 <div className="mt-4 pt-4 border-t border-gray-100">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2 group cursor-pointer">
@@ -818,7 +1028,6 @@ ${selectedServicesList}
                   Contact <span style={{ color: colors.teal }}>Information</span>
                 </h3>
 
-                {/* Working Hours */}
                 <div className="mb-4 group cursor-pointer transition-all duration-300 hover:bg-teal-50/50 p-3 rounded-xl">
                   <h4 className="font-semibold text-sm mb-2" style={{ color: colors.navy }}>
                     <FaClock className="inline mr-2 group-hover:animate-spin-slow" style={{ color: colors.teal }} />
@@ -842,7 +1051,6 @@ ${selectedServicesList}
 
                 <div className="border-t border-gray-100 my-4"></div>
 
-                {/* Contact Details */}
                 <div className="space-y-3">
                   {[
                     { icon: FaPhoneAlt, label: 'Phone', value: `+91 ${formattedPhone}`, link: `tel:${phoneNumber}` },
@@ -877,7 +1085,6 @@ ${selectedServicesList}
 
                 <div className="border-t border-gray-100 my-4"></div>
 
-                {/* Quick Services */}
                 <div>
                   <h4 className="font-semibold text-sm mb-2" style={{ color: colors.navy }}>
                     <FaTruck className="inline mr-2 animate-pulse-slow" style={{ color: colors.teal }} />
@@ -903,7 +1110,6 @@ ${selectedServicesList}
 
                 <div className="border-t border-gray-100 my-4"></div>
 
-                {/* Why Choose Us */}
                 <div>
                   <h4 className="font-semibold text-sm mb-2" style={{ color: colors.navy }}>
                     <FaStar className="inline mr-2 animate-spin-slow" style={{ color: colors.teal }} />
@@ -911,10 +1117,13 @@ ${selectedServicesList}
                   </h4>
                   <div className="space-y-1">
                     {[
-                      '4+ Years Experience',
-                      '500+ Happy Customers',
-                      '100% Satisfaction',
-                      '24/7 Support'
+                     'Scratch-Free Care for Your Walls & Furniture',
+                     'Quiet, Clean & Neighbor-Friendly Service',
+                     'Safe Handling of Every Item – Big or Small',
+                     'Professional Packing, Loading & Unloading',
+                     'Hassle-Free, Stress-Free Relocation',
+                     'On-Time & Reliable Service Every Time',
+                     'Make Moving a Happy Memory for Your Family'
                     ].map((item, index) => (
                       <div key={index} className="flex items-center gap-1.5 text-xs group cursor-pointer transition-all duration-300 hover:translate-x-1">
                         <FaCheckCircle style={{ color: colors.teal }} size={10} className="group-hover:animate-pulse" />
@@ -926,7 +1135,6 @@ ${selectedServicesList}
 
                 <div className="border-t border-gray-100 my-4"></div>
 
-                {/* Trust Badge */}
                 <div className="text-center group cursor-pointer transition-all duration-300 hover:scale-105">
                   <div className="flex items-center justify-center gap-1">
                     {[...Array(5)].map((_, i) => (
@@ -959,16 +1167,30 @@ ${selectedServicesList}
           }`} style={{ animationDelay: '600ms' }}>
             <div className="aspect-w-16 aspect-h-9 rounded-xl overflow-hidden">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31317.882027407474!2d76.9557808!3d11.0168445!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba858b6c7e6ffd3%3A0x4e2f2f8a6b4f6c0!2sCoimbatore%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000"
+                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3916.3342!2d77.1693224!3d11.3530614!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1700000000000"
                 width="100%"
                 height="250"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="GBOOMBA Location"
+                title="GBOOMBA Location - Coimbatore"
                 className="rounded-xl transition-all duration-500 hover:scale-[1.01]"
               ></iframe>
+            </div>
+            <div className="mt-2 text-center">
+              <p className="text-xs text-gray-500 flex items-center justify-center gap-2">
+                <FaMapMarkerAlt style={{ color: colors.teal }} size={12} />
+                <span>📍 11°21'11.0"N 77°10'09.6"E - Coimbatore, Tamil Nadu</span>
+                <a 
+                  href="https://www.google.com/maps/place/11%C2%B021'11.0%22N+77%C2%B010'09.6%22E/@11.3530614,77.1667475,778m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d11.3530614!4d77.1693224?hl=en&entry=ttu&g_ep=EgoyMDI2MDYyOS4wIKXMDSoASAFQAw%3D%3D"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-300 text-xs font-medium"
+                >
+                  View on Google Maps →
+                </a>
+              </p>
             </div>
           </div>
         </div>
@@ -1057,23 +1279,18 @@ ${selectedServicesList}
         .animate-spin {
           animation: spin 1s linear infinite;
         }
-        /* Scrollbar Styles */
-        .max-h-48::-webkit-scrollbar,
-        .max-h-36::-webkit-scrollbar {
+        .max-h-500::-webkit-scrollbar {
           width: 4px;
         }
-        .max-h-48::-webkit-scrollbar-track,
-        .max-h-36::-webkit-scrollbar-track {
+        .max-h-500::-webkit-scrollbar-track {
           background: #f1f1f1;
           border-radius: 4px;
         }
-        .max-h-48::-webkit-scrollbar-thumb,
-        .max-h-36::-webkit-scrollbar-thumb {
+        .max-h-500::-webkit-scrollbar-thumb {
           background: #008080;
           border-radius: 4px;
         }
-        .max-h-48::-webkit-scrollbar-thumb:hover,
-        .max-h-36::-webkit-scrollbar-thumb:hover {
+        .max-h-500::-webkit-scrollbar-thumb:hover {
           background: #006666;
         }
       `}</style>

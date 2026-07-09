@@ -46,6 +46,11 @@ const Footer = () => {
 
   const currentYear = new Date().getFullYear();
 
+  // Phone number details
+  const phoneNumber = '918111002100';
+  const formattedPhone = '81 1100 2100';
+  const whatsappNumber = '918111002100';
+
   // Data for quick links
   const quickLinks = [
     { name: 'Home', path: '/' },
@@ -70,7 +75,7 @@ const Footer = () => {
   // Data for social media
   const socialLinks = [
     { icon: FaFacebook, url: 'https://facebook.com', label: 'Facebook', color: '#1877f2' },
-    { icon: FaInstagram, url: 'https://www.instagram.com/gboomba_homesolutions?igsh=MXA0djJjcnE3aDQyag==', label: 'Instagram', color: '#e4405f' },
+    { icon: FaInstagram, url: 'https://www.instagram.com/gboomba_homesolutions', label: 'Instagram', color: '#e4405f' },
     { icon: FaYoutube, url: 'https://youtube.com', label: 'YouTube', color: '#ff0000' },
   ];
 
@@ -276,14 +281,21 @@ const Footer = () => {
                 </li>
                 <li className="flex items-center gap-2.5 text-gray-300 text-xs transition-all duration-200 hover:text-teal-300">
                   <FaPhoneAlt style={{ color: colors.teal }} size={12} />
-                  <a href="tel:918111002100" className="hover:text-teal-300 transition-colors duration-200">
-                    81 1100 2100
+                  <a 
+                    href={`tel:${phoneNumber}`} 
+                    className="hover:text-teal-300 transition-colors duration-200"
+                    onClick={(e) => {
+                      // Optional: Add analytics tracking here if needed
+                      console.log('Call initiated to:', formattedPhone);
+                    }}
+                  >
+                    {formattedPhone}
                   </a>
                 </li>
                 <li className="flex items-center gap-2.5 text-gray-300 text-xs transition-all duration-200 hover:text-teal-300">
                   <FaWhatsapp style={{ color: '#25D366' }} size={12} />
                   <a 
-                    href="https://wa.me/918111002100" 
+                    href={`https://wa.me/${whatsappNumber}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="hover:text-teal-300 transition-colors duration-200"

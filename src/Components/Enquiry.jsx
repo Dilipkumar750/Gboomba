@@ -1,5 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { FaPhoneAlt, FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaCheck, FaArrowRight, FaTimes } from 'react-icons/fa';
+import { 
+  FaPhoneAlt, 
+  FaWhatsapp, 
+  FaEnvelope, 
+  FaMapMarkerAlt, 
+  FaCheck, 
+  FaArrowRight, 
+  FaTimes,
+  FaTruck,
+  FaBuilding,
+  FaInfoCircle,
+  FaUser,
+  FaCalendarAlt,
+  FaHome,
+  FaRegSmile,
+  FaChevronDown,
+  FaChevronUp
+} from 'react-icons/fa';
 
 const Enquiry = () => {
   const [animateIn, setAnimateIn] = useState(false);
@@ -27,7 +44,7 @@ const Enquiry = () => {
       icon: '🚚'
     },
     'Transport Services': {
-      subcategories: ['Mini Door Vehicle', 'Pickup Vehicle', 'Eicher Vehicle', 'Other Long-Chassis Vehicle', 'Local Transport', 'Long-Distance Transport'],
+      subcategories: ['Mini Door Vehicle - TATA Ace', 'Pickup Vehicle - 2 Ton', 'Eicher Vehicle', 'Other Long-Chassis Vehicle', 'Local Transport', 'Long-Distance Transport'],
       icon: '🚐'
     },
     'AC Installation & Services': {
@@ -40,6 +57,7 @@ const Enquiry = () => {
     }
   };
 
+  // Form State
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
@@ -51,14 +69,19 @@ const Enquiry = () => {
     shopType: '',
     shopArea: '',
     serviceType: 'enquiry',
-    categories: [], // Changed from category to categories (array)
-    subcategories: []
+    categories: [],
+    subcategories: [],
+    floorNumber: '',
+    liftAvailable: '',
+    additionalMessage: ''
   });
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
-  const [selectedCategories, setSelectedCategories] = useState([]); // Array for multiple categories
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
+  const [showPackersFields, setShowPackersFields] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState({});
 
   // Logo Colors
   const colors = {
@@ -69,12 +92,26 @@ const Enquiry = () => {
     tealLight: '#e6f7f7',
   };
 
+  // Check if Packers & Movers is selected
+  useEffect(() => {
+    const isPackersSelected = selectedCategories.includes('Packers & Movers');
+    setShowPackersFields(isPackersSelected);
+  }, [selectedCategories]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
+  };
+
+  // Toggle accordion expand/collapse
+  const toggleCategory = (category) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }));
   };
 
   // Handle category toggle (checkbox)
@@ -89,8 +126,18 @@ const Enquiry = () => {
         setSelectedSubcategories(prevSubs => 
           prevSubs.filter(sub => !categorySubcategories.includes(sub))
         );
+        // Collapse the category when unselecting
+        setExpandedCategories(prev => ({
+          ...prev,
+          [category]: false
+        }));
       } else {
         newCategories = [...prev, category];
+        // Auto-expand the category when selecting
+        setExpandedCategories(prev => ({
+          ...prev,
+          [category]: true
+        }));
       }
       
       // Update formData
@@ -164,13 +211,33 @@ const Enquiry = () => {
       'enquiry': '📋 Quotation (Enquiry)'
     };
 
-    let message = `📋 *NEW SERVICE ENQUIRY - GBOOMBA HOME SERVICES*\n`;
-    message += `═══════════════════════════\n\n`;
-    
-    message += `📌 *WORK TYPE*\n`;
-    message += `${serviceTypeMap[formData.serviceType] || 'Not specified'}\n\n`;
-    
-    message += `📌 *SERVICE CATEGORIES*\n`;
+    // Build Packers & Movers details
+    let packersDetails = '';
+    if (showPackersFields) {
+      packersDetails = `
+📦 *Packers & Movers Details:*
+─────────────────
+• Floor Number: ${formData.floorNumber || 'Not specified'}
+• Lift Available: ${formData.liftAvailable || 'Not specified'}`;
+    }
+
+    // Build additional message
+    let additionalMsg = '';
+    if (formData.additionalMessage) {
+      additionalMsg = `
+📝 *Additional Message:*
+─────────────────
+${formData.additionalMessage}`;
+    }
+
+    let message = `📋 *NEW SERVICE ENQUIRY - GBOOMBA HOME SERVICES*
+═══════════════════════════
+
+📌 *WORK TYPE*
+${serviceTypeMap[formData.serviceType] || 'Not specified'}
+
+📌 *SERVICE CATEGORIES*
+`;
     if (selectedCategories.length > 0) {
       selectedCategories.forEach((category, index) => {
         message += `  ${index + 1}. ${category}\n`;
@@ -188,48 +255,63 @@ const Enquiry = () => {
       message += `\n`;
     }
     
-    message += `👤 *CUSTOMER DETAILS*\n`;
-    message += `─────────────────\n`;
-    message += `👤 Name: ${formData.name || 'Not provided'}\n`;
-    message += `📱 Mobile: ${formData.mobile || 'Not provided'}\n`;
-    message += `📍 Address: ${formData.address || 'Not provided'}\n`;
-    message += `📅 Date & Time: ${formatDate(formData.shiftingDate)}\n\n`;
-    
-    message += `📌 *RELOCATION TYPE*\n`;
-    message += `${relocationTypeMap[formData.relocationType] || 'Not selected'}\n\n`;
+    message += `👤 *CUSTOMER DETAILS*
+─────────────────
+👤 Name: ${formData.name || 'Not provided'}
+📱 Mobile: ${formData.mobile || 'Not provided'}
+📍 Address: ${formData.address || 'Not provided'}
+📅 Date & Time: ${formatDate(formData.shiftingDate)}
+
+📌 *RELOCATION TYPE*
+${relocationTypeMap[formData.relocationType] || 'Not selected'}
+`;
     
     if (formData.relocationType === 'house' && formData.homeBHK) {
-      message += `🏠 *House Details*\n`;
-      message += `BHK: ${formData.homeBHK}\n\n`;
+      message += `
+🏠 *House Details*
+BHK: ${formData.homeBHK}
+`;
     }
     
     if (formData.relocationType === 'office' && formData.officeSqft) {
-      message += `🏢 *Office Details*\n`;
-      message += `Area: ${formData.officeSqft} sq.ft\n\n`;
+      message += `
+🏢 *Office Details*
+Area: ${formData.officeSqft} sq.ft
+`;
     }
     
     if (formData.relocationType === 'shop') {
-      if (formData.shopType) {
-        message += `🏪 *Shop Details*\n`;
-        message += `Shop Type: ${formData.shopType}\n`;
-      }
-      if (formData.shopArea) {
-        message += `Shop Area: ${formData.shopArea} sq.ft\n`;
-      }
       if (formData.shopType || formData.shopArea) {
-        message += `\n`;
+        message += `\n🏪 *Shop Details*\n`;
+        if (formData.shopType) {
+          message += `Shop Type: ${formData.shopType}\n`;
+        }
+        if (formData.shopArea) {
+          message += `Shop Area: ${formData.shopArea} sq.ft\n`;
+        }
       }
     }
     
-    message += `═══════════════════════════\n`;
-    message += `📩 *GBOOMBA HOME SERVICES*\n`;
-    message += `📞 Contact: 81 1100 2100\n`;
-    message += `🌐 *Complete Home Solutions*\n`;
-    message += `• Cleaning • Painting • Electrical & Plumbing\n`;
-    message += `• AC Technician • Packers & Movers • Transport\n`;
-    message += `• Carpentry Services\n`;
-    message += `═══════════════════════════\n`;
-    message += `_This is an automated enquiry from the website._`;
+    // Add Packers & Movers details if selected
+    if (showPackersFields) {
+      message += packersDetails;
+    }
+    
+    // Add additional message if provided
+    if (formData.additionalMessage) {
+      message += additionalMsg;
+    }
+    
+    message += `
+═══════════════════════════
+📩 *GBOOMBA HOME SERVICES*
+📞 Contact: 81 1100 2100
+🌐 *Complete Home Solutions*
+• Cleaning • Painting • Electrical & Plumbing
+• AC Technician • Packers & Movers • Transport
+• Carpentry Services
+═══════════════════════════
+_This is an automated enquiry from the website._`;
     
     return encodeURIComponent(message);
   };
@@ -259,6 +341,16 @@ const Enquiry = () => {
     }
     if (selectedSubcategories.length === 0) {
       newErrors.subcategories = 'Please select at least one service';
+    }
+    
+    // Validate Packers & Movers extra fields
+    if (showPackersFields) {
+      if (!formData.floorNumber) {
+        newErrors.floorNumber = 'Please enter floor number';
+      }
+      if (!formData.liftAvailable) {
+        newErrors.liftAvailable = 'Please select lift availability';
+      }
     }
 
     setErrors(newErrors);
@@ -302,10 +394,15 @@ const Enquiry = () => {
         shopArea: '',
         serviceType: 'enquiry',
         categories: [],
-        subcategories: []
+        subcategories: [],
+        floorNumber: '',
+        liftAvailable: '',
+        additionalMessage: ''
       });
       setSelectedCategories([]);
       setSelectedSubcategories([]);
+      setShowPackersFields(false);
+      setExpandedCategories({});
     }, 5000);
   };
 
@@ -422,79 +519,266 @@ const Enquiry = () => {
               </div>
             </div>
 
-            {/* Service Categories - Multiple Selection with Checkboxes */}
+            {/* Service Categories - Accordion Design */}
             <div className="mb-5">
               <label className="block text-gray-700 font-medium text-sm mb-2">
                 Which Service Are You Looking For? <span className="text-red-500">*</span>
                 <span className="block text-xs font-normal text-gray-400 mt-0.5">(Select one or more services)</span>
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto p-1">
-                {Object.keys(serviceCategories).map((category) => (
-                  <label
-                    key={category}
-                    className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                      selectedCategories.includes(category)
-                        ? 'border-teal bg-teal-light shadow-md'
-                        : 'border-gray-200 hover:border-teal hover:bg-gray-50'
-                    }`}
-                    onClick={() => handleCategoryToggle(category)}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedCategories.includes(category)}
-                      onChange={() => handleCategoryToggle(category)}
-                      className="mr-2 w-4 h-4 accent-teal flex-shrink-0"
-                    />
-                    <span className="text-sm">
-                      {serviceCategories[category].icon} {category}
-                    </span>
-                  </label>
-                ))}
+              
+              {/* Selected Categories Count */}
+              {selectedCategories.length > 0 && (
+                <div className="mb-2 p-2 rounded-lg" style={{ backgroundColor: colors.tealLight }}>
+                  <p className="text-xs font-medium" style={{ color: colors.teal }}>
+                    Selected: {selectedCategories.length} category(s)
+                  </p>
+                </div>
+              )}
+
+              {/* Accordion Categories */}
+              <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
+                {Object.keys(serviceCategories).map((category) => {
+                  const isSelected = selectedCategories.includes(category);
+                  const isExpanded = expandedCategories[category] || false;
+                  const categoryData = serviceCategories[category];
+                  const subcategories = categoryData.subcategories || [];
+                  const selectedSubsForCategory = subcategories.filter(sub => selectedSubcategories.includes(sub));
+
+                  return (
+                    <div 
+                      key={category}
+                      className={`border-2 rounded-lg transition-all duration-300 overflow-hidden ${
+                        isSelected ? 'border-teal shadow-md' : 'border-gray-200'
+                      }`}
+                      style={{
+                        borderColor: isSelected ? colors.teal : undefined,
+                        backgroundColor: isSelected ? colors.tealLight : 'white'
+                      }}
+                    >
+                      {/* Category Header */}
+                      <div 
+                        className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+                        onClick={() => toggleCategory(category)}
+                        style={{
+                          backgroundColor: isSelected ? colors.tealLight : 'white'
+                        }}
+                      >
+                        <div 
+                          className="flex items-center gap-3 flex-1"
+                          onClick={(e) => {
+                            // Only toggle category if clicking on the text/icon area, not the checkbox
+                            if (e.target.type !== 'checkbox') {
+                              handleCategoryToggle(category);
+                            }
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              handleCategoryToggle(category);
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-4 h-4 accent-teal flex-shrink-0"
+                          />
+                          <span className="text-sm font-medium">
+                            {categoryData.icon} {category}
+                          </span>
+                          {isSelected && selectedSubsForCategory.length > 0 && (
+                            <span className="text-[10px] bg-teal text-white px-2 py-0.5 rounded-full">
+                              {selectedSubsForCategory.length}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {isSelected && (
+                            <span className="text-[10px] text-teal font-medium">✓ Selected</span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleCategory(category);
+                            }}
+                            className="p-1 hover:bg-gray-200 rounded-full transition-colors duration-200"
+                          >
+                            {isExpanded ? (
+                              <FaChevronUp size={14} className="text-gray-500" />
+                            ) : (
+                              <FaChevronDown size={14} className="text-gray-500" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Subcategories - Accordion Content */}
+                      <div 
+                        className={`transition-all duration-300 overflow-hidden ${
+                          isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                        }`}
+                      >
+                        <div className="p-3 pt-0 border-t border-gray-200" style={{ backgroundColor: 'rgba(255,255,255,0.7)' }}>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 mt-2">
+                            {subcategories.map((subcategory) => (
+                              <label
+                                key={subcategory}
+                                className={`flex items-center p-1.5 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                                  selectedSubcategories.includes(subcategory)
+                                    ? 'border-teal bg-white shadow-md'
+                                    : 'border-gray-300 hover:border-teal hover:bg-gray-50'
+                                } ${
+                                  !isSelected ? 'opacity-50 cursor-not-allowed' : ''
+                                }`}
+                                onClick={(e) => {
+                                  if (isSelected) {
+                                    handleSubcategoryToggle(subcategory);
+                                  }
+                                }}
+                                style={{
+                                  borderColor: selectedSubcategories.includes(subcategory) ? colors.teal : undefined,
+                                  backgroundColor: selectedSubcategories.includes(subcategory) ? 'white' : undefined,
+                                  cursor: isSelected ? 'pointer' : 'not-allowed'
+                                }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={selectedSubcategories.includes(subcategory)}
+                                  onChange={() => {
+                                    if (isSelected) {
+                                      handleSubcategoryToggle(subcategory);
+                                    }
+                                  }}
+                                  disabled={!isSelected}
+                                  className="mr-2 w-4 h-4 accent-teal flex-shrink-0"
+                                />
+                                <span className="text-xs">{subcategory}</span>
+                              </label>
+                            ))}
+                          </div>
+                          {!isSelected && (
+                            <p className="text-[10px] text-gray-400 mt-2 italic">
+                              Please select this category to choose services
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
               {errors.categories && (
                 <p className="text-red-500 text-xs mt-1 error-message">{errors.categories}</p>
               )}
-              {selectedCategories.length > 0 && (
-                <p className="text-xs mt-1" style={{ color: colors.teal }}>
-                  Selected: {selectedCategories.length} category(s)
-                </p>
-              )}
             </div>
 
-            {/* Subcategories - Dynamic based on selected categories */}
-            {selectedCategories.length > 0 && currentSubcategories.length > 0 && (
-              <div className="mb-5 p-4 rounded-lg" style={{ backgroundColor: colors.tealLight }}>
-                <label className="block text-gray-700 font-medium text-sm mb-2">
-                  Select Services under Selected Categories <span className="text-red-500">*</span>
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-                  {currentSubcategories.map((subcategory) => (
-                    <label
-                      key={subcategory}
-                      className={`flex items-center p-2.5 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                        selectedSubcategories.includes(subcategory)
-                          ? 'border-teal bg-white shadow-md'
-                          : 'border-gray-300 bg-white/70 hover:border-teal'
-                      }`}
-                      onClick={() => handleSubcategoryToggle(subcategory)}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedSubcategories.includes(subcategory)}
-                        onChange={() => handleSubcategoryToggle(subcategory)}
-                        className="mr-2 w-4 h-4 accent-teal flex-shrink-0"
-                      />
-                      <span className="text-sm">{subcategory}</span>
+            {/* Packers & Movers Extra Fields */}
+            {showPackersFields && (
+              <div className="mb-5 p-4 rounded-lg border-2 border-orange-200 animate-fade-in-up" style={{ backgroundColor: '#fff7ed' }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <FaTruck className="text-orange-600" size={18} />
+                  <h4 className="text-sm font-bold text-orange-800">Packers & Movers Details</h4>
+                  <span className="text-[10px] bg-orange-200 text-orange-700 px-2 py-0.5 rounded-full">Required</span>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Floor Number */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1.5">
+                      <FaBuilding className="inline mr-1" style={{ color: colors.teal }} size={12} />
+                      Which Floor? <span className="text-red-500">*</span>
                     </label>
+                    <input
+                      type="text"
+                      name="floorNumber"
+                      value={formData.floorNumber}
+                      onChange={handleChange}
+                      placeholder="e.g. Ground, 1st, 2nd, etc."
+                      className={`w-full px-3 py-2.5 border rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:scale-[1.01] ${
+                        errors.floorNumber 
+                          ? 'border-red-500 focus:ring-red-200' 
+                          : 'border-gray-300 focus:ring-teal/20 focus:border-teal'
+                      }`}
+                      style={{
+                        borderColor: errors.floorNumber ? undefined : colors.teal + '40',
+                      }}
+                    />
+                    {errors.floorNumber && (
+                      <p className="text-red-500 text-xs mt-1 error-message">{errors.floorNumber}</p>
+                    )}
+                  </div>
+
+                  {/* Lift Available */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1.5">
+                      <FaBuilding className="inline mr-1" style={{ color: colors.teal }} size={12} />
+                      Lift Available? <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex gap-2">
+                      {['Yes', 'No'].map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, liftAvailable: option }));
+                            if (errors.liftAvailable) {
+                              setErrors(prev => ({ ...prev, liftAvailable: '' }));
+                            }
+                          }}
+                          className={`flex-1 px-4 py-2.5 border-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 ${
+                            formData.liftAvailable === option
+                              ? 'border-teal-500 bg-teal-50 text-teal-700 shadow-md'
+                              : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+                          }`}
+                          style={{
+                            borderColor: formData.liftAvailable === option ? colors.teal : undefined,
+                            backgroundColor: formData.liftAvailable === option ? colors.tealLight : undefined,
+                            color: formData.liftAvailable === option ? colors.teal : undefined
+                          }}
+                        >
+                          {option === 'Yes' ? '✅ Yes' : '❌ No'}
+                        </button>
+                      ))}
+                    </div>
+                    {errors.liftAvailable && (
+                      <p className="text-red-500 text-xs mt-1 error-message">{errors.liftAvailable}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-3 text-xs text-gray-500 flex items-center gap-1">
+                  <FaInfoCircle className="text-blue-500" size={12} />
+                  <span>This information helps us assign the right moving team and equipment</span>
+                </div>
+              </div>
+            )}
+
+            {/* Selected Services Summary */}
+            {selectedSubcategories.length > 0 && (
+              <div className="mb-5 p-3 rounded-lg" style={{ backgroundColor: colors.tealLight }}>
+                <p className="text-xs font-medium" style={{ color: colors.teal }}>
+                  📌 Selected Services:
+                </p>
+                <div className="flex flex-wrap gap-1 mt-1.5">
+                  {selectedSubcategories.map((service, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center gap-1 px-2 py-1 bg-white rounded-full text-xs shadow-sm"
+                      style={{ color: colors.navy }}
+                    >
+                      {service}
+                      <button
+                        type="button"
+                        onClick={() => handleSubcategoryToggle(service)}
+                        className="text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <FaTimes size={10} />
+                      </button>
+                    </span>
                   ))}
                 </div>
                 {errors.subcategories && (
                   <p className="text-red-500 text-xs mt-1 error-message">{errors.subcategories}</p>
-                )}
-                {selectedSubcategories.length > 0 && (
-                  <p className="text-xs mt-2" style={{ color: colors.teal }}>
-                    Selected: {selectedSubcategories.length} service(s)
-                  </p>
                 )}
               </div>
             )}
@@ -503,6 +787,7 @@ const Enquiry = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-medium text-sm mb-1.5">
+                  <FaUser className="inline mr-1" style={{ color: colors.teal }} size={12} />
                   Full Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -523,6 +808,7 @@ const Enquiry = () => {
               </div>
               <div>
                 <label className="block text-gray-700 font-medium text-sm mb-1.5">
+                  <FaPhoneAlt className="inline mr-1" style={{ color: colors.teal }} size={12} />
                   Mobile Number <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -546,6 +832,7 @@ const Enquiry = () => {
 
             <div className="mt-4">
               <label className="block text-gray-700 font-medium text-sm mb-1.5">
+                <FaHome className="inline mr-1" style={{ color: colors.teal }} size={12} />
                 Address <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -567,6 +854,7 @@ const Enquiry = () => {
 
             <div className="mt-4">
               <label className="block text-gray-700 font-medium text-sm mb-1.5">
+                <FaCalendarAlt className="inline mr-1" style={{ color: colors.teal }} size={12} />
                 Shifting Date & Time <span className="text-red-500">*</span>
               </label>
               <input
@@ -652,7 +940,7 @@ const Enquiry = () => {
             {/* Property Details */}
             <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-700 font-medium text-sm mb-1.5">Home (BHK)</label>
+                <label className="block text-gray-700 font-medium text-sm mb-1.5">🏠 Home (BHK)</label>
                 <input
                   type="text"
                   name="homeBHK"
@@ -663,7 +951,7 @@ const Enquiry = () => {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-medium text-sm mb-1.5">Office (Sq.ft)</label>
+                <label className="block text-gray-700 font-medium text-sm mb-1.5">🏢 Office (Sq.ft)</label>
                 <input
                   type="text"
                   name="officeSqft"
@@ -677,7 +965,7 @@ const Enquiry = () => {
 
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-700 font-medium text-sm mb-1.5">Shop Type</label>
+                <label className="block text-gray-700 font-medium text-sm mb-1.5">🏪 Shop Type</label>
                 <input
                   type="text"
                   name="shopType"
@@ -700,32 +988,22 @@ const Enquiry = () => {
               </div>
             </div>
 
-            {/* Selected Services Summary */}
-            {selectedSubcategories.length > 0 && (
-              <div className="mt-4 p-3 rounded-lg" style={{ backgroundColor: colors.tealLight }}>
-                <p className="text-xs font-medium" style={{ color: colors.teal }}>
-                  Selected Services:
-                </p>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {selectedSubcategories.map((service, index) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 bg-white rounded-full text-xs"
-                      style={{ color: colors.navy }}
-                    >
-                      {service}
-                      <button
-                        type="button"
-                        onClick={() => handleSubcategoryToggle(service)}
-                        className="text-gray-400 hover:text-red-500 transition-colors"
-                      >
-                        <FaTimes size={10} />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Additional Message Box */}
+            <div className="mt-5">
+              <label className="block text-gray-700 font-medium text-sm mb-1.5">
+                <FaRegSmile className="inline mr-1" style={{ color: colors.teal }} size={14} />
+                Additional Message
+                <span className="block text-xs font-normal text-gray-400 mt-0.5">Any special requirements or instructions</span>
+              </label>
+              <textarea
+                name="additionalMessage"
+                value={formData.additionalMessage}
+                onChange={handleChange}
+                placeholder="e.g. Fragile items, specific timing, parking instructions, etc."
+                rows="3"
+                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal focus:border-teal transition-all duration-200 resize-none"
+              />
+            </div>
 
             {/* Submit Button */}
             <button
@@ -798,12 +1076,23 @@ const Enquiry = () => {
           from { opacity: 0; transform: translateY(-10px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
         @keyframes bounce-slow {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-8px); }
         }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
         .animate-fadeIn {
           animation: fadeIn 0.5s ease-out;
+        }
+        .animate-fade-in-up {
+          animation: fadeInUp 0.5s ease-out;
         }
         .animate-bounce-slow {
           animation: bounce-slow 2s ease-in-out infinite;
@@ -811,11 +1100,21 @@ const Enquiry = () => {
         .animate-pulse {
           animation: pulse 2s ease-in-out infinite;
         }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
         /* Scrollbar Styles */
+        .max-h-500::-webkit-scrollbar {
+          width: 4px;
+        }
+        .max-h-500::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 4px;
+        }
+        .max-h-500::-webkit-scrollbar-thumb {
+          background: #008080;
+          border-radius: 4px;
+        }
+        .max-h-500::-webkit-scrollbar-thumb:hover {
+          background: #006666;
+        }
         .max-h-64::-webkit-scrollbar,
         .max-h-48::-webkit-scrollbar {
           width: 4px;
